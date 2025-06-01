@@ -9,4 +9,5 @@ export interface Particle {
   size: number;
   hue: number;
   opacity: number;
+  trackingType: string;
 }
