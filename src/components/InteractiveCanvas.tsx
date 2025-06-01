@@ -5,6 +5,7 @@ import { setupCanvas } from '@/utils/canvasUtils';
 import { createMouseEventHandlers, createTouchEventHandlers } from '@/utils/eventHandlers';
 import { useCanvasAnimation } from '@/hooks/useCanvasAnimation';
 import { useSettings } from '@/contexts/SettingsContext';
+import { getBackgroundStyle, getBackgroundSize } from '@/utils/backgroundUtils';
 
 const InteractiveCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,7 +13,7 @@ const InteractiveCanvas: React.FC = () => {
   const touchesRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
-  const { trackingType, isDarkMode } = useSettings();
+  const { trackingType, isDarkMode, backgroundType } = useSettings();
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
@@ -59,10 +60,9 @@ const InteractiveCanvas: React.FC = () => {
     };
   }, [trackingType]); // Re-run when tracking type changes
 
-  // Dynamic background styles based on dark mode
-  const backgroundStyle = isDarkMode 
-    ? 'radial-gradient(circle at center, #0c1220 0%, #080c14 100%)'
-    : 'radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%)';
+  // Dynamic background styles based on background type and dark mode
+  const backgroundStyle = getBackgroundStyle(backgroundType, isDarkMode);
+  const backgroundSize = getBackgroundSize(backgroundType);
 
   const textColor = isDarkMode ? 'text-white/40' : 'text-gray-600/60';
   const debugTextColor = isDarkMode ? 'text-white/30' : 'text-gray-500/50';
@@ -73,7 +73,10 @@ const InteractiveCanvas: React.FC = () => {
       <canvas
         ref={canvasRef}
         className="absolute inset-0 cursor-crosshair"
-        style={{ background: backgroundStyle }}
+        style={{ 
+          background: backgroundStyle,
+          backgroundSize: backgroundSize
+        }}
       />
       
       {/* Subtle instructions */}

@@ -6,6 +6,8 @@ interface SettingsContextType {
   setTrackingType: (type: string) => void;
   isDarkMode: boolean;
   setIsDarkMode: (dark: boolean) => void;
+  backgroundType: string;
+  setBackgroundType: (type: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -28,6 +30,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
            window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
+  const [backgroundType, setBackgroundTypeState] = useState(() => {
+    return localStorage.getItem('backgroundType') || 'none';
+  });
+
   const setTrackingType = (type: string) => {
     setTrackingTypeState(type);
     localStorage.setItem('trackingType', type);
@@ -45,6 +51,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  const setBackgroundType = (type: string) => {
+    setBackgroundTypeState(type);
+    localStorage.setItem('backgroundType', type);
+    console.log('Background type changed to:', type);
+  };
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -54,7 +66,14 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ trackingType, setTrackingType, isDarkMode, setIsDarkMode }}>
+    <SettingsContext.Provider value={{ 
+      trackingType, 
+      setTrackingType, 
+      isDarkMode, 
+      setIsDarkMode,
+      backgroundType,
+      setBackgroundType
+    }}>
       {children}
     </SettingsContext.Provider>
   );
