@@ -13,7 +13,7 @@ export const SettingsPanel = ({ children }: SettingsPanelProps) => {
         <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Settings</h3>
       </div>
       
-      <ScrollArea className="flex-1 overflow-hidden">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-3 space-y-4">
           {children}
         </div>
