@@ -1,45 +1,20 @@
 
-import { useState, useEffect } from 'react';
-import { Settings, Sun, Moon, MousePointer, Hand } from 'lucide-react';
+import { useState } from 'react';
+import { Settings, Sun, Moon, MousePointer } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check if dark mode is already active or if user prefers dark mode
-    return document.documentElement.classList.contains('dark') || 
-           window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-  const [trackingType, setTrackingType] = useState(() => {
-    return localStorage.getItem('trackingType') || 'subtle';
-  });
-
-  useEffect(() => {
-    // Apply the initial dark mode state
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
+  const { trackingType, setTrackingType, isDarkMode, setIsDarkMode } = useSettings();
 
   const toggleDarkMode = (checked: boolean) => {
     setIsDarkMode(checked);
-    if (checked) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
   };
 
   const handleTrackingChange = (value: string) => {
     setTrackingType(value);
-    localStorage.setItem('trackingType', value);
-    // You can add logic here to update the particle system behavior
-    console.log('Tracking type changed to:', value);
   };
 
   return (

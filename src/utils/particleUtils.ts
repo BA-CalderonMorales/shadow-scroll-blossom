@@ -1,23 +1,40 @@
 
 import { Particle } from '@/types/particle';
 
-export const createParticle = (x: number, y: number): Particle => {
+export const createParticle = (x: number, y: number, trackingType: string = 'subtle'): Particle => {
   const angle = Math.random() * Math.PI * 2;
-  const speed = Math.random() * 1.5 + 0.5; // Slower movement
+  
+  let speed, life, size, hue, opacity;
+  
+  if (trackingType === 'dynamic') {
+    // Dynamic burst settings
+    speed = Math.random() * 3 + 1;
+    life = 180;
+    size = Math.random() * 4 + 2;
+    hue = Math.random() * 60 + 180; // Wider color range
+    opacity = Math.random() * 0.6 + 0.2;
+  } else {
+    // Subtle trail settings (default)
+    speed = Math.random() * 1.5 + 0.5;
+    life = 120;
+    size = Math.random() * 2 + 1;
+    hue = Math.random() * 40 + 200; // Narrower blue range
+    opacity = Math.random() * 0.3 + 0.1;
+  }
   
   const particle = {
     x,
     y,
     vx: Math.cos(angle) * speed,
     vy: Math.sin(angle) * speed,
-    life: 120, // Longer life
-    maxLife: 120,
-    size: Math.random() * 2 + 1, // Smaller particles
-    hue: Math.random() * 40 + 200, // Narrower blue range
-    opacity: Math.random() * 0.3 + 0.1 // Lower opacity
+    life,
+    maxLife: life,
+    size,
+    hue,
+    opacity
   };
   
-  console.log('Particle created at', { x, y });
+  console.log('Particle created at', { x, y, trackingType });
   return particle;
 };
 
@@ -27,8 +44,8 @@ export const updateParticle = (particle: Particle): Particle => {
     x: particle.x + particle.vx,
     y: particle.y + particle.vy,
     life: particle.life - 1,
-    vy: particle.vy + 0.01, // Less gravity
-    vx: particle.vx * 0.99 // Less air resistance
+    vy: particle.vy + 0.01,
+    vx: particle.vx * 0.99
   };
 };
 

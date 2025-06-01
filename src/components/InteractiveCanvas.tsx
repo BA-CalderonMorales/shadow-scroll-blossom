@@ -4,6 +4,7 @@ import { Particle } from '@/types/particle';
 import { setupCanvas } from '@/utils/canvasUtils';
 import { createMouseEventHandlers, createTouchEventHandlers } from '@/utils/eventHandlers';
 import { useCanvasAnimation } from '@/hooks/useCanvasAnimation';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const InteractiveCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -11,6 +12,7 @@ const InteractiveCanvas: React.FC = () => {
   const touchesRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
+  const { trackingType } = useSettings();
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
@@ -19,16 +21,16 @@ const InteractiveCanvas: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    console.log('Canvas initialized');
+    console.log('Canvas initialized with tracking type:', trackingType);
     setupCanvas(canvas);
 
     // Set up resize handler
     const resizeCanvas = () => setupCanvas(canvas);
     window.addEventListener('resize', resizeCanvas);
 
-    // Create event handlers
-    const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef);
-    const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch);
+    // Create event handlers with current tracking type
+    const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef, trackingType);
+    const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch, trackingType);
 
     // Add event listeners
     canvas.addEventListener('mousemove', mouseHandlers.handleMouseMove);
@@ -55,7 +57,7 @@ const InteractiveCanvas: React.FC = () => {
       
       touchesRef.current.clear();
     };
-  }, []);
+  }, [trackingType]); // Re-run when tracking type changes
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gray-900">

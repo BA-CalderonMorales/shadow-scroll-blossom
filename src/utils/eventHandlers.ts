@@ -5,7 +5,8 @@ import { createParticle } from './particleUtils';
 export const createMouseEventHandlers = (
   canvas: HTMLCanvasElement,
   particlesRef: React.MutableRefObject<Particle[]>,
-  mouseRef: React.MutableRefObject<{ x: number; y: number; isPressed: boolean }>
+  mouseRef: React.MutableRefObject<{ x: number; y: number; isPressed: boolean }>,
+  trackingType: string
 ) => {
   const handleMouseMove = (e: MouseEvent) => {
     const rect = canvas.getBoundingClientRect();
@@ -13,11 +14,14 @@ export const createMouseEventHandlers = (
     mouseRef.current.y = e.clientY - rect.top;
 
     if (mouseRef.current.isPressed) {
-      // Create fewer, more subtle particles
-      for (let i = 0; i < 2; i++) {
+      const particleCount = trackingType === 'dynamic' ? 4 : 2;
+      const spread = trackingType === 'dynamic' ? 30 : 20;
+      
+      for (let i = 0; i < particleCount; i++) {
         particlesRef.current.push(createParticle(
-          mouseRef.current.x + (Math.random() - 0.5) * 20,
-          mouseRef.current.y + (Math.random() - 0.5) * 20
+          mouseRef.current.x + (Math.random() - 0.5) * spread,
+          mouseRef.current.y + (Math.random() - 0.5) * spread,
+          trackingType
         ));
       }
     }
@@ -31,9 +35,9 @@ export const createMouseEventHandlers = (
     
     console.log('Mouse down', { x: mouseRef.current.x, y: mouseRef.current.y });
     
-    // Create subtle initial burst
-    for (let i = 0; i < 3; i++) {
-      particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y));
+    const burstCount = trackingType === 'dynamic' ? 8 : 3;
+    for (let i = 0; i < burstCount; i++) {
+      particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
     }
   };
 
@@ -49,7 +53,8 @@ export const createTouchEventHandlers = (
   canvas: HTMLCanvasElement,
   particlesRef: React.MutableRefObject<Particle[]>,
   touchesRef: React.MutableRefObject<Map<number, { x: number; y: number }>>,
-  setIsTouch: (isTouch: boolean) => void
+  setIsTouch: (isTouch: boolean) => void,
+  trackingType: string
 ) => {
   const handleTouchStart = (e: TouchEvent) => {
     e.preventDefault();
@@ -65,9 +70,9 @@ export const createTouchEventHandlers = (
       
       console.log('Touch start', { id: touch.identifier, x, y, totalTouches: touchesRef.current.size });
       
-      // Create subtle initial burst for each touch
-      for (let j = 0; j < 3; j++) {
-        particlesRef.current.push(createParticle(x, y));
+      const burstCount = trackingType === 'dynamic' ? 8 : 3;
+      for (let j = 0; j < burstCount; j++) {
+        particlesRef.current.push(createParticle(x, y, trackingType));
       }
     }
   };
@@ -85,11 +90,14 @@ export const createTouchEventHandlers = (
 
       console.log('Touch move', { id: touch.identifier, x, y });
 
-      // Create subtle particles for each active touch
-      for (let j = 0; j < 2; j++) {
+      const particleCount = trackingType === 'dynamic' ? 4 : 2;
+      const spread = trackingType === 'dynamic' ? 25 : 15;
+      
+      for (let j = 0; j < particleCount; j++) {
         particlesRef.current.push(createParticle(
-          x + (Math.random() - 0.5) * 15,
-          y + (Math.random() - 0.5) * 15
+          x + (Math.random() - 0.5) * spread,
+          y + (Math.random() - 0.5) * spread,
+          trackingType
         ));
       }
     }
@@ -98,7 +106,6 @@ export const createTouchEventHandlers = (
   const handleTouchEnd = (e: TouchEvent) => {
     e.preventDefault();
     
-    // Remove ended touches
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
       touchesRef.current.delete(touch.identifier);

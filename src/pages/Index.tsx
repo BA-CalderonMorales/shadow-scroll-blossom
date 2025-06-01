@@ -1,13 +1,16 @@
 
 import InteractiveCanvas from "@/components/InteractiveCanvas";
 import { SettingsMenu } from "@/components/SettingsMenu";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 
 const Index = () => {
   return (
-    <div className="relative">
-      <InteractiveCanvas />
-      <SettingsMenu />
-    </div>
+    <SettingsProvider>
+      <div className="relative">
+        <InteractiveCanvas />
+        <SettingsMenu />
+      </div>
+    </SettingsProvider>
   );
 };
 
