@@ -10,12 +10,14 @@ interface Particle {
   maxLife: number;
   size: number;
   hue: number;
+  opacity: number;
 }
 
 const InteractiveCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const particlesRef = useRef<Particle[]>([]);
+  const touchesRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
 
@@ -37,20 +39,21 @@ const InteractiveCanvas: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Particle creation
+    // Particle creation - more subtle
     const createParticle = (x: number, y: number): Particle => {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 3 + 2;
+      const speed = Math.random() * 1.5 + 0.5; // Slower movement
       
       const particle = {
         x,
         y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        life: 60,
-        maxLife: 60,
-        size: Math.random() * 4 + 2,
-        hue: Math.random() * 60 + 200 // Blue to purple range
+        life: 120, // Longer life
+        maxLife: 120,
+        size: Math.random() * 2 + 1, // Smaller particles
+        hue: Math.random() * 40 + 200, // Narrower blue range
+        opacity: Math.random() * 0.3 + 0.1 // Lower opacity
       };
       
       console.log('Particle created at', { x, y, particles: particlesRef.current.length + 1 });
@@ -59,8 +62,8 @@ const InteractiveCanvas: React.FC = () => {
 
     // Animation loop
     const animate = () => {
-      // Clear canvas with trail effect
-      ctx.fillStyle = 'rgba(10, 10, 15, 0.1)';
+      // More subtle trail effect
+      ctx.fillStyle = 'rgba(8, 12, 20, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw particles
@@ -71,34 +74,35 @@ const InteractiveCanvas: React.FC = () => {
         particle.x += particle.vx;
         particle.y += particle.vy;
         particle.life -= 1;
-        particle.vy += 0.03; // Slight gravity
-        particle.vx *= 0.98; // Air resistance
+        particle.vy += 0.01; // Less gravity
+        particle.vx *= 0.99; // Less air resistance
 
         // Calculate alpha based on life
-        const alpha = Math.max(0, particle.life / particle.maxLife);
+        const lifeRatio = particle.life / particle.maxLife;
+        const alpha = Math.max(0, lifeRatio * particle.opacity);
         
-        if (alpha > 0) {
-          // Draw particle with glow effect
+        if (alpha > 0.01) {
+          // Draw subtle particle with soft glow
           ctx.save();
           
-          // Outer glow
+          // Soft outer glow
           const gradient = ctx.createRadialGradient(
             particle.x, particle.y, 0,
-            particle.x, particle.y, particle.size * 2
+            particle.x, particle.y, particle.size * 3
           );
-          gradient.addColorStop(0, `hsla(${particle.hue}, 100%, 70%, ${alpha * 0.6})`);
-          gradient.addColorStop(0.5, `hsla(${particle.hue}, 100%, 50%, ${alpha * 0.3})`);
-          gradient.addColorStop(1, `hsla(${particle.hue}, 100%, 30%, 0)`);
+          gradient.addColorStop(0, `hsla(${particle.hue}, 60%, 80%, ${alpha * 0.4})`);
+          gradient.addColorStop(0.4, `hsla(${particle.hue}, 70%, 60%, ${alpha * 0.2})`);
+          gradient.addColorStop(1, `hsla(${particle.hue}, 80%, 40%, 0)`);
           
           ctx.fillStyle = gradient;
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
           ctx.fill();
 
-          // Inner core
-          ctx.fillStyle = `hsla(${particle.hue}, 100%, 90%, ${alpha})`;
+          // Very subtle inner core
+          ctx.fillStyle = `hsla(${particle.hue}, 70%, 85%, ${alpha * 0.6})`;
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, particle.size * 0.8, 0, Math.PI * 2);
           ctx.fill();
           
           ctx.restore();
@@ -117,14 +121,12 @@ const InteractiveCanvas: React.FC = () => {
       mouseRef.current.x = e.clientX - rect.left;
       mouseRef.current.y = e.clientY - rect.top;
 
-      console.log('Mouse move', { x: mouseRef.current.x, y: mouseRef.current.y, isPressed: mouseRef.current.isPressed });
-
       if (mouseRef.current.isPressed) {
-        // Create particles on mouse drag
-        for (let i = 0; i < 5; i++) {
+        // Create fewer, more subtle particles
+        for (let i = 0; i < 2; i++) {
           particlesRef.current.push(createParticle(
-            mouseRef.current.x + (Math.random() - 0.5) * 30,
-            mouseRef.current.y + (Math.random() - 0.5) * 30
+            mouseRef.current.x + (Math.random() - 0.5) * 20,
+            mouseRef.current.y + (Math.random() - 0.5) * 20
           ));
         }
       }
@@ -138,8 +140,8 @@ const InteractiveCanvas: React.FC = () => {
       
       console.log('Mouse down', { x: mouseRef.current.x, y: mouseRef.current.y });
       
-      // Create initial burst
-      for (let i = 0; i < 10; i++) {
+      // Create subtle initial burst
+      for (let i = 0; i < 3; i++) {
         particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y));
       }
     };
@@ -149,46 +151,61 @@ const InteractiveCanvas: React.FC = () => {
       mouseRef.current.isPressed = false;
     };
 
-    // Touch events
+    // Multi-touch events
     const handleTouchStart = (e: TouchEvent) => {
       e.preventDefault();
       setIsTouch(true);
-      const rect = canvas.getBoundingClientRect();
-      const touch = e.touches[0];
-      mouseRef.current.x = touch.clientX - rect.left;
-      mouseRef.current.y = touch.clientY - rect.top;
-      mouseRef.current.isPressed = true;
       
-      console.log('Touch start', { x: mouseRef.current.x, y: mouseRef.current.y });
-      
-      // Create initial burst
-      for (let i = 0; i < 10; i++) {
-        particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y));
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        touchesRef.current.set(touch.identifier, { x, y });
+        
+        console.log('Touch start', { id: touch.identifier, x, y, totalTouches: touchesRef.current.size });
+        
+        // Create subtle initial burst for each touch
+        for (let j = 0; j < 3; j++) {
+          particlesRef.current.push(createParticle(x, y));
+        }
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       e.preventDefault();
       const rect = canvas.getBoundingClientRect();
-      const touch = e.touches[0];
-      mouseRef.current.x = touch.clientX - rect.left;
-      mouseRef.current.y = touch.clientY - rect.top;
+      
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        const prevTouch = touchesRef.current.get(touch.identifier);
+        touchesRef.current.set(touch.identifier, { x, y });
 
-      console.log('Touch move', { x: mouseRef.current.x, y: mouseRef.current.y });
+        console.log('Touch move', { id: touch.identifier, x, y });
 
-      // Create particles on touch drag
-      for (let i = 0; i < 6; i++) {
-        particlesRef.current.push(createParticle(
-          mouseRef.current.x + (Math.random() - 0.5) * 30,
-          mouseRef.current.y + (Math.random() - 0.5) * 30
-        ));
+        // Create subtle particles for each active touch
+        for (let j = 0; j < 2; j++) {
+          particlesRef.current.push(createParticle(
+            x + (Math.random() - 0.5) * 15,
+            y + (Math.random() - 0.5) * 15
+          ));
+        }
       }
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
       e.preventDefault();
-      console.log('Touch end');
-      mouseRef.current.isPressed = false;
+      
+      // Remove ended touches
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        const touch = e.changedTouches[i];
+        touchesRef.current.delete(touch.identifier);
+        console.log('Touch end', { id: touch.identifier, remainingTouches: touchesRef.current.size });
+      }
     };
 
     // Add event listeners
@@ -220,6 +237,8 @@ const InteractiveCanvas: React.FC = () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      
+      touchesRef.current.clear();
     };
   }, []);
 
@@ -228,24 +247,27 @@ const InteractiveCanvas: React.FC = () => {
       <canvas
         ref={canvasRef}
         className="absolute inset-0 cursor-crosshair"
-        style={{ background: 'radial-gradient(circle at center, #1a1a2e 0%, #0a0a0f 100%)' }}
+        style={{ background: 'radial-gradient(circle at center, #0c1220 0%, #080c14 100%)' }}
       />
       
-      {/* Instructions */}
-      <div className="absolute top-6 left-6 text-white/70 text-sm font-medium z-10">
+      {/* Subtle instructions */}
+      <div className="absolute top-6 left-6 text-white/40 text-xs font-light z-10">
         <p className="flex items-center gap-2">
-          <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
-          {isTouch ? 'Touch and drag to create particles' : 'Click and drag to create magic'}
+          <span className="w-1 h-1 bg-blue-300/60 rounded-full animate-pulse"></span>
+          {isTouch ? 'Touch with multiple fingers' : 'Move and click to create'}
         </p>
       </div>
 
-      {/* Debug info */}
-      <div className="absolute top-6 right-6 text-white/50 text-xs z-10">
-        <p>Particles: {particlesRef.current?.length || 0}</p>
+      {/* Minimal debug info */}
+      <div className="absolute top-6 right-6 text-white/30 text-xs z-10">
+        <p>Active: {particlesRef.current?.length || 0}</p>
+        {touchesRef.current.size > 0 && (
+          <p>Touches: {touchesRef.current.size}</p>
+        )}
       </div>
 
-      {/* Corner decoration */}
-      <div className="absolute bottom-6 right-6 text-white/30 text-xs">
+      {/* Subtle corner signature */}
+      <div className="absolute bottom-6 right-6 text-white/20 text-xs">
         Interactive Canvas
       </div>
     </div>
