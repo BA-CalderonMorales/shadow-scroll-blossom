@@ -44,6 +44,13 @@ export const drawStyledParticle = (
   }
 };
 
+// Helper function to create valid hex color with alpha
+const createColorWithAlpha = (color: string, alpha: number): string => {
+  const clampedAlpha = Math.max(0, Math.min(1, alpha));
+  const alphaHex = Math.round(clampedAlpha * 255).toString(16).padStart(2, '0');
+  return `${color}${alphaHex}`;
+};
+
 const drawDefaultParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number) => {
   ctx.save();
   ctx.globalAlpha = alpha;
@@ -67,9 +74,9 @@ const drawGlowParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alp
       particle.x, particle.y, radius
     );
     
-    gradient.addColorStop(0, `${particle.color}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`);
-    gradient.addColorStop(0.3, `${particle.color}${Math.floor(opacity * 128).toString(16).padStart(2, '0')}`);
-    gradient.addColorStop(1, `${particle.color}00`);
+    gradient.addColorStop(0, createColorWithAlpha(particle.color, opacity));
+    gradient.addColorStop(0.3, createColorWithAlpha(particle.color, opacity * 0.5));
+    gradient.addColorStop(1, createColorWithAlpha(particle.color, 0));
     
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -91,7 +98,7 @@ const drawCrystallineParticle = (ctx: CanvasRenderingContext2D, particle: Partic
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.strokeStyle = particle.color;
-  ctx.fillStyle = `${particle.color}40`;
+  ctx.fillStyle = createColorWithAlpha(particle.color, 0.25);
   ctx.lineWidth = 2;
   
   const sides = 8;
@@ -143,10 +150,10 @@ const drawPlasmaParticle = (ctx: CanvasRenderingContext2D, particle: Particle, a
     particle.x, particle.y, particle.size * 4
   );
   
-  gradient.addColorStop(0, `#ffffff${Math.floor(alpha * 255 * pulse1).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(0.2, `${particle.color}${Math.floor(alpha * 220 * pulse2).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(0.5, `${particle.color}${Math.floor(alpha * 150 * pulse1).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(1, `${particle.color}00`);
+  gradient.addColorStop(0, createColorWithAlpha('#ffffff', alpha * pulse1));
+  gradient.addColorStop(0.2, createColorWithAlpha(particle.color, alpha * pulse2 * 0.86));
+  gradient.addColorStop(0.5, createColorWithAlpha(particle.color, alpha * pulse1 * 0.59));
+  gradient.addColorStop(1, createColorWithAlpha(particle.color, 0));
   
   ctx.fillStyle = gradient;
   ctx.beginPath();
@@ -155,7 +162,7 @@ const drawPlasmaParticle = (ctx: CanvasRenderingContext2D, particle: Particle, a
   
   // Plasma tendrils
   if (Math.random() < 0.4) {
-    ctx.strokeStyle = `${particle.color}${Math.floor(alpha * 180).toString(16).padStart(2, '0')}`;
+    ctx.strokeStyle = createColorWithAlpha(particle.color, alpha * 0.7);
     ctx.lineWidth = particle.size * 0.3;
     ctx.lineCap = 'round';
     
@@ -191,9 +198,9 @@ const drawStardustParticle = (ctx: CanvasRenderingContext2D, particle: Particle,
   
   // Outer glow
   const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, outerRadius * 2);
-  gradient.addColorStop(0, `${particle.color}${Math.floor(alpha * 150).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(0.5, `${particle.color}60`);
-  gradient.addColorStop(1, `${particle.color}00`);
+  gradient.addColorStop(0, createColorWithAlpha(particle.color, alpha * 0.59));
+  gradient.addColorStop(0.5, createColorWithAlpha(particle.color, alpha * 0.38));
+  gradient.addColorStop(1, createColorWithAlpha(particle.color, 0));
   
   ctx.fillStyle = gradient;
   ctx.beginPath();
@@ -235,10 +242,10 @@ const drawEnergyParticle = (ctx: CanvasRenderingContext2D, particle: Particle, a
     particle.x, particle.y, particle.size * 3
   );
   
-  coreGradient.addColorStop(0, `#ffffff${Math.floor(alpha * 255 * energy).toString(16).padStart(2, '0')}`);
-  coreGradient.addColorStop(0.2, `${particle.color}${Math.floor(alpha * 220).toString(16).padStart(2, '0')}`);
-  coreGradient.addColorStop(0.6, `${particle.color}${Math.floor(alpha * 120).toString(16).padStart(2, '0')}`);
-  coreGradient.addColorStop(1, `${particle.color}00`);
+  coreGradient.addColorStop(0, createColorWithAlpha('#ffffff', alpha * energy));
+  coreGradient.addColorStop(0.2, createColorWithAlpha(particle.color, alpha * 0.86));
+  coreGradient.addColorStop(0.6, createColorWithAlpha(particle.color, alpha * 0.47));
+  coreGradient.addColorStop(1, createColorWithAlpha(particle.color, 0));
   
   ctx.fillStyle = coreGradient;
   ctx.beginPath();
@@ -250,7 +257,7 @@ const drawEnergyParticle = (ctx: CanvasRenderingContext2D, particle: Particle, a
     const ringAlpha = alpha * (0.6 - i * 0.15) * energy;
     const ringRadius = particle.size * (1 + i * 1.5);
     
-    ctx.strokeStyle = `${particle.color}${Math.floor(ringAlpha * 255).toString(16).padStart(2, '0')}`;
+    ctx.strokeStyle = createColorWithAlpha(particle.color, ringAlpha);
     ctx.lineWidth = particle.size * 0.2;
     ctx.beginPath();
     ctx.arc(particle.x, particle.y, ringRadius, 0, Math.PI * 2);
@@ -281,9 +288,9 @@ const drawEtherealParticle = (ctx: CanvasRenderingContext2D, particle: Particle,
       particle.x + offsetX, particle.y + offsetY, particle.size * 6
     );
     
-    gradient.addColorStop(0, `${particle.color}${Math.floor(alpha * 80 * flow).toString(16).padStart(2, '0')}`);
-    gradient.addColorStop(0.4, `${particle.color}${Math.floor(alpha * 40 * flow).toString(16).padStart(2, '0')}`);
-    gradient.addColorStop(1, `${particle.color}00`);
+    gradient.addColorStop(0, createColorWithAlpha(particle.color, alpha * 0.31 * flow));
+    gradient.addColorStop(0.4, createColorWithAlpha(particle.color, alpha * 0.16 * flow));
+    gradient.addColorStop(1, createColorWithAlpha(particle.color, 0));
     
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -346,10 +353,10 @@ const drawFlameParticle = (ctx: CanvasRenderingContext2D, particle: Particle, al
     particle.x, particle.y - particle.size, particle.size * 4
   );
   
-  gradient.addColorStop(0, `#ffff00${Math.floor(alpha * 255 * flicker).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(0.3, `#ff8800${Math.floor(alpha * 200 * flicker).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(0.6, `#ff0000${Math.floor(alpha * 150 * flicker).toString(16).padStart(2, '0')}`);
-  gradient.addColorStop(1, `#aa0000${Math.floor(alpha * 50 * flicker).toString(16).padStart(2, '0')}`);
+  gradient.addColorStop(0, createColorWithAlpha('#ffff00', alpha * flicker));
+  gradient.addColorStop(0.3, createColorWithAlpha('#ff8800', alpha * flicker * 0.78));
+  gradient.addColorStop(0.6, createColorWithAlpha('#ff0000', alpha * flicker * 0.59));
+  gradient.addColorStop(1, createColorWithAlpha('#aa0000', alpha * flicker * 0.20));
   
   // Flame shape
   ctx.fillStyle = gradient;
@@ -402,7 +409,7 @@ const drawElectricParticle = (ctx: CanvasRenderingContext2D, particle: Particle,
   ctx.fill();
   
   // Electric arcs
-  ctx.strokeStyle = `#00ffff${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
+  ctx.strokeStyle = createColorWithAlpha('#00ffff', alpha);
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
   
@@ -433,9 +440,9 @@ const drawElectricParticle = (ctx: CanvasRenderingContext2D, particle: Particle,
     particle.x, particle.y, 0,
     particle.x, particle.y, particle.size * 6
   );
-  glowGradient.addColorStop(0, `#00ffff${Math.floor(alpha * 100).toString(16).padStart(2, '0')}`);
-  glowGradient.addColorStop(0.5, `#0088ff${Math.floor(alpha * 60).toString(16).padStart(2, '0')}`);
-  glowGradient.addColorStop(1, `#0088ff00`);
+  glowGradient.addColorStop(0, createColorWithAlpha('#00ffff', alpha * 0.39));
+  glowGradient.addColorStop(0.5, createColorWithAlpha('#0088ff', alpha * 0.24));
+  glowGradient.addColorStop(1, createColorWithAlpha('#0088ff', 0));
   
   ctx.fillStyle = glowGradient;
   ctx.beginPath();
