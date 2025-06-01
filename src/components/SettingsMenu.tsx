@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { Settings, Sun, Moon } from 'lucide-react';
+import { Settings, Sun, Moon, MousePointer, Hand } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,9 @@ export const SettingsMenu = () => {
     // Check if dark mode is already active or if user prefers dark mode
     return document.documentElement.classList.contains('dark') || 
            window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+  const [trackingType, setTrackingType] = useState(() => {
+    return localStorage.getItem('trackingType') || 'subtle';
   });
 
   useEffect(() => {
@@ -31,6 +35,13 @@ export const SettingsMenu = () => {
     }
   };
 
+  const handleTrackingChange = (value: string) => {
+    setTrackingType(value);
+    localStorage.setItem('trackingType', value);
+    // You can add logic here to update the particle system behavior
+    console.log('Tracking type changed to:', value);
+  };
+
   return (
     <div className="fixed top-4 right-4 z-50">
       {/* Settings Button */}
@@ -48,7 +59,8 @@ export const SettingsMenu = () => {
             <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Settings</h3>
           </div>
           
-          <div className="p-3 space-y-3">
+          <div className="p-3 space-y-4">
+            {/* Dark Mode Toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 {isDarkMode ? (
@@ -65,6 +77,30 @@ export const SettingsMenu = () => {
                 onCheckedChange={toggleDarkMode}
                 className="scale-75"
               />
+            </div>
+
+            {/* Tracking Animation Options */}
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <MousePointer className="w-3 h-3 text-gray-600 dark:text-gray-400" />
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                  Tracking Animation
+                </span>
+              </div>
+              <RadioGroup value={trackingType} onValueChange={handleTrackingChange} className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="subtle" id="subtle" className="w-3 h-3" />
+                  <label htmlFor="subtle" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
+                    Subtle Trail
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="dynamic" id="dynamic" className="w-3 h-3" />
+                  <label htmlFor="dynamic" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
+                    Dynamic Burst
+                  </label>
+                </div>
+              </RadioGroup>
             </div>
           </div>
         </div>
