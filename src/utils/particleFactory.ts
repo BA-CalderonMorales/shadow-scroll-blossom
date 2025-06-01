@@ -1,3 +1,4 @@
+
 import { Particle } from '@/types/particle';
 
 export const createParticle = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle => {
@@ -53,8 +54,22 @@ const getBackgroundAwareColor = (backgroundType: string): string => {
       return oceanColors[Math.floor(Math.random() * oceanColors.length)];
     
     default:
-      return `hsl(${Math.random() * 360}, 70%, 60%)`;
+      // Convert HSL to hex format to avoid color parsing issues
+      const hue = Math.random() * 360;
+      return hslToHex(hue, 70, 60);
   }
+};
+
+// Helper function to convert HSL to hex
+const hslToHex = (h: number, s: number, l: number): string => {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
 };
 
 const applyBackgroundBehavior = (particle: Particle, backgroundType: string, trackingType: string): Particle => {
