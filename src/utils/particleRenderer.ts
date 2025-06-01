@@ -1,7 +1,17 @@
-
 import { Particle } from '@/types/particle';
+import { drawStyledParticle } from './particleStyleRenderer';
 
-export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, isDarkMode: boolean = true, backgroundType: string = 'none'): void => {
+export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, isDarkMode: boolean = true, backgroundType: string = 'none', particleStyle: string = 'default') => {
+  // Use the new styled particle renderer
+  drawStyledParticle(ctx, particle, isDarkMode, backgroundType, particleStyle);
+  
+  // Background-specific enhancements
+  if (backgroundType !== 'none') {
+    drawBackgroundSpecificEffects(ctx, particle, backgroundType, isDarkMode);
+  }
+};
+
+const drawBackgroundSpecificEffects = (ctx: CanvasRenderingContext2D, particle: Particle, backgroundType: string, isDarkMode: boolean): void => {
   const alpha = particle.life / particle.maxLife;
   
   // Apply background-specific rendering effects

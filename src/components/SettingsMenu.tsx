@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Settings, Sun, Moon, MousePointer, ChevronDown, Circle, CheckCircle, Image } from 'lucide-react';
+import { Settings, Sun, Moon, MousePointer, ChevronDown, Circle, CheckCircle, Image, Sparkles } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,13 +10,16 @@ export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [isBackgroundOpen, setIsBackgroundOpen] = useState(false);
+  const [isParticleStyleOpen, setIsParticleStyleOpen] = useState(false);
   const { 
     trackingType, 
     setTrackingType, 
     isDarkMode, 
     setIsDarkMode,
     backgroundType,
-    setBackgroundType
+    setBackgroundType,
+    particleStyle,
+    setParticleStyle
   } = useSettings();
 
   const toggleDarkMode = (checked: boolean) => {
@@ -30,6 +32,10 @@ export const SettingsMenu = () => {
 
   const handleBackgroundChange = (value: string) => {
     setBackgroundType(value);
+  };
+
+  const handleParticleStyleChange = (value: string) => {
+    setParticleStyle(value);
   };
 
   const trackingOptions = [
@@ -54,8 +60,19 @@ export const SettingsMenu = () => {
     { value: 'ocean', label: 'Deep Ocean', description: 'Underwater light rays' }
   ];
 
+  const particleStyleOptions = [
+    { value: 'default', label: 'Classic', description: 'Standard circular particles' },
+    { value: 'glow', label: 'Glowing Orbs', description: 'Soft luminous spheres' },
+    { value: 'crystalline', label: 'Crystal Shards', description: 'Sharp geometric crystals' },
+    { value: 'plasma', label: 'Plasma Bubbles', description: 'Energy-filled spheres' },
+    { value: 'stardust', label: 'Stardust', description: 'Twinkling star particles' },
+    { value: 'energy', label: 'Energy Cores', description: 'Pulsing power sources' },
+    { value: 'ethereal', label: 'Ethereal Wisps', description: 'Ghostly floating forms' }
+  ];
+
   const isAnimationActive = trackingType !== 'none';
   const isBackgroundActive = backgroundType !== 'none';
+  const isParticleStyleActive = particleStyle !== 'default';
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -121,6 +138,48 @@ export const SettingsMenu = () => {
                             <RadioGroupItem value={option.value} id={`bg-${option.value}`} className="w-3 h-3 mt-0.5" />
                             <div className="flex-1 min-w-0">
                               <label htmlFor={`bg-${option.value}`} className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer block">
+                                {option.label}
+                              </label>
+                              <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+                                {option.description}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </ScrollArea>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Particle Style Collapsible Section */}
+            <Collapsible open={isParticleStyleOpen} onOpenChange={setIsParticleStyleOpen}>
+              <CollapsibleTrigger className="flex items-center justify-between w-full py-2 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Particle Style</span>
+                  {isParticleStyleActive ? (
+                    <CheckCircle className="w-3 h-3 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <Circle className="w-3 h-3 text-gray-400 dark:text-gray-500" />
+                  )}
+                </div>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isParticleStyleOpen ? 'rotate-180' : ''}`} />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="overflow-hidden">
+                <div className="pt-2">
+                  <div className="relative">
+                    <div className="absolute top-0 left-0 right-2 h-3 bg-gradient-to-b from-white/90 to-transparent dark:from-gray-900/90 pointer-events-none z-10 rounded-t" />
+                    <div className="absolute bottom-0 left-0 right-2 h-3 bg-gradient-to-t from-white/90 to-transparent dark:from-gray-900/90 pointer-events-none z-10 rounded-b" />
+                    
+                    <ScrollArea className="h-32 w-full border border-gray-300/50 dark:border-gray-600/50 rounded bg-gray-50/50 dark:bg-gray-800/50 shadow-inner">
+                      <RadioGroup value={particleStyle} onValueChange={handleParticleStyleChange} className="space-y-3 p-2">
+                        {particleStyleOptions.map((option) => (
+                          <div key={option.value} className="flex items-start space-x-2">
+                            <RadioGroupItem value={option.value} id={`ps-${option.value}`} className="w-3 h-3 mt-0.5" />
+                            <div className="flex-1 min-w-0">
+                              <label htmlFor={`ps-${option.value}`} className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer block">
                                 {option.label}
                               </label>
                               <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">

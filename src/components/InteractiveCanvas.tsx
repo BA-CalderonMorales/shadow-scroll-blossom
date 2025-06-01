@@ -14,12 +14,12 @@ const InteractiveCanvas: React.FC = () => {
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const { trackingType, isDarkMode, backgroundType } = useSettings();
+  const { trackingType, isDarkMode, backgroundType, particleStyle } = useSettings();
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
 
-  // Handle background transitions
+  // Handle background and particle style transitions
   useEffect(() => {
     setIsTransitioning(true);
     
@@ -31,20 +31,20 @@ const InteractiveCanvas: React.FC = () => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [backgroundType]);
+  }, [backgroundType, particleStyle]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    console.log('Canvas initialized with tracking type:', trackingType, 'background:', backgroundType);
+    console.log('Canvas initialized with tracking type:', trackingType, 'background:', backgroundType, 'particle style:', particleStyle);
     setupCanvas(canvas);
 
     // Set up resize handler
     const resizeCanvas = () => setupCanvas(canvas);
     window.addEventListener('resize', resizeCanvas);
 
-    // Create event handlers with current tracking type and background type
+    // Create event handlers with current settings
     const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef, trackingType, backgroundType);
     const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch, trackingType, backgroundType);
 
@@ -73,7 +73,7 @@ const InteractiveCanvas: React.FC = () => {
       
       touchesRef.current.clear();
     };
-  }, [trackingType, backgroundType]); // Re-run when tracking type or background changes
+  }, [trackingType, backgroundType, particleStyle]); // Re-run when any setting changes
 
   const textColor = isDarkMode ? 'text-white/40' : 'text-gray-600/60';
   const debugTextColor = isDarkMode ? 'text-white/30' : 'text-gray-500/50';
@@ -109,6 +109,11 @@ const InteractiveCanvas: React.FC = () => {
         {backgroundType !== 'none' && (
           <p className="mt-1 text-xs opacity-60 capitalize">
             {backgroundType} mode active
+          </p>
+        )}
+        {particleStyle !== 'default' && (
+          <p className="mt-1 text-xs opacity-60 capitalize">
+            {particleStyle} particles
           </p>
         )}
       </div>

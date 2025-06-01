@@ -8,6 +8,8 @@ interface SettingsContextType {
   setIsDarkMode: (dark: boolean) => void;
   backgroundType: string;
   setBackgroundType: (type: string) => void;
+  particleStyle: string;
+  setParticleStyle: (style: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -34,6 +36,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return localStorage.getItem('backgroundType') || 'none';
   });
 
+  const [particleStyle, setParticleStyleState] = useState(() => {
+    return localStorage.getItem('particleStyle') || 'default';
+  });
+
   const setTrackingType = (type: string) => {
     setTrackingTypeState(type);
     localStorage.setItem('trackingType', type);
@@ -57,6 +63,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     console.log('Background type changed to:', type);
   };
 
+  const setParticleStyle = (style: string) => {
+    setParticleStyleState(style);
+    localStorage.setItem('particleStyle', style);
+    console.log('Particle style changed to:', style);
+  };
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -72,7 +84,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       isDarkMode, 
       setIsDarkMode,
       backgroundType,
-      setBackgroundType
+      setBackgroundType,
+      particleStyle,
+      setParticleStyle
     }}>
       {children}
     </SettingsContext.Provider>
