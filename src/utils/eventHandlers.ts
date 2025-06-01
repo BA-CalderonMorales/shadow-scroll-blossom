@@ -14,26 +14,46 @@ export const createMouseEventHandlers = (
     mouseRef.current.y = e.clientY - rect.top;
 
     if (mouseRef.current.isPressed) {
-      if (trackingType === 'comet') {
-        // Comet creates fewer but more persistent particles
-        const particleCount = 1;
+      let particleCount = 2;
+      let spread = 20;
+      
+      switch (trackingType) {
+        case 'comet':
+          particleCount = 1;
+          break;
+        case 'fireworks':
+          particleCount = 3;
+          spread = 30;
+          break;
+        case 'lightning':
+          particleCount = 1;
+          break;
+        case 'galaxy':
+          particleCount = 2;
+          spread = 15;
+          break;
+        case 'neon':
+          particleCount = 1;
+          break;
+        case 'watercolor':
+          particleCount = 1;
+          spread = 25;
+          break;
+        case 'geometric':
+          particleCount = 2;
+          spread = 10;
+          break;
+        default: // 'subtle'
+          particleCount = 2;
+          spread = 20;
+      }
+      
+      for (let i = 0; i < particleCount; i++) {
         particlesRef.current.push(createParticle(
-          mouseRef.current.x,
-          mouseRef.current.y,
+          mouseRef.current.x + (Math.random() - 0.5) * spread,
+          mouseRef.current.y + (Math.random() - 0.5) * spread,
           trackingType
         ));
-      } else {
-        // Subtle trail
-        const particleCount = 2;
-        const spread = 20;
-        
-        for (let i = 0; i < particleCount; i++) {
-          particlesRef.current.push(createParticle(
-            mouseRef.current.x + (Math.random() - 0.5) * spread,
-            mouseRef.current.y + (Math.random() - 0.5) * spread,
-            trackingType
-          ));
-        }
       }
     }
   };
@@ -46,18 +66,36 @@ export const createMouseEventHandlers = (
     
     console.log('Mouse down', { x: mouseRef.current.x, y: mouseRef.current.y });
     
-    if (trackingType === 'comet') {
-      // Comet creates a small initial burst
-      const burstCount = 2;
-      for (let i = 0; i < burstCount; i++) {
-        particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
-      }
-    } else {
-      // Subtle trail
-      const burstCount = 3;
-      for (let i = 0; i < burstCount; i++) {
-        particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
-      }
+    let burstCount = 3;
+    
+    switch (trackingType) {
+      case 'comet':
+        burstCount = 2;
+        break;
+      case 'fireworks':
+        burstCount = 8;
+        break;
+      case 'lightning':
+        burstCount = 5;
+        break;
+      case 'galaxy':
+        burstCount = 4;
+        break;
+      case 'neon':
+        burstCount = 3;
+        break;
+      case 'watercolor':
+        burstCount = 2;
+        break;
+      case 'geometric':
+        burstCount = 6;
+        break;
+      default: // 'subtle'
+        burstCount = 3;
+    }
+    
+    for (let i = 0; i < burstCount; i++) {
+      particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
     }
   };
 
@@ -90,18 +128,36 @@ export const createTouchEventHandlers = (
       
       console.log('Touch start', { id: touch.identifier, x, y, totalTouches: touchesRef.current.size });
       
-      if (trackingType === 'comet') {
-        // Comet creates fewer initial particles
-        const burstCount = 2;
-        for (let j = 0; j < burstCount; j++) {
-          particlesRef.current.push(createParticle(x, y, trackingType));
-        }
-      } else {
-        // Subtle trail
-        const burstCount = 3;
-        for (let j = 0; j < burstCount; j++) {
-          particlesRef.current.push(createParticle(x, y, trackingType));
-        }
+      let burstCount = 3;
+      
+      switch (trackingType) {
+        case 'comet':
+          burstCount = 2;
+          break;
+        case 'fireworks':
+          burstCount = 8;
+          break;
+        case 'lightning':
+          burstCount = 5;
+          break;
+        case 'galaxy':
+          burstCount = 4;
+          break;
+        case 'neon':
+          burstCount = 3;
+          break;
+        case 'watercolor':
+          burstCount = 2;
+          break;
+        case 'geometric':
+          burstCount = 6;
+          break;
+        default: // 'subtle'
+          burstCount = 3;
+      }
+      
+      for (let j = 0; j < burstCount; j++) {
+        particlesRef.current.push(createParticle(x, y, trackingType));
       }
     }
   };
@@ -119,22 +175,46 @@ export const createTouchEventHandlers = (
 
       console.log('Touch move', { id: touch.identifier, x, y });
 
-      if (trackingType === 'comet') {
-        // Comet creates continuous single particles
-        const particleCount = 1;
-        particlesRef.current.push(createParticle(x, y, trackingType));
-      } else {
-        // Subtle trail
-        const particleCount = 2;
-        const spread = 15;
-        
-        for (let j = 0; j < particleCount; j++) {
-          particlesRef.current.push(createParticle(
-            x + (Math.random() - 0.5) * spread,
-            y + (Math.random() - 0.5) * spread,
-            trackingType
-          ));
-        }
+      let particleCount = 2;
+      let spread = 15;
+      
+      switch (trackingType) {
+        case 'comet':
+          particleCount = 1;
+          break;
+        case 'fireworks':
+          particleCount = 3;
+          spread = 25;
+          break;
+        case 'lightning':
+          particleCount = 1;
+          break;
+        case 'galaxy':
+          particleCount = 2;
+          spread = 12;
+          break;
+        case 'neon':
+          particleCount = 1;
+          break;
+        case 'watercolor':
+          particleCount = 1;
+          spread = 20;
+          break;
+        case 'geometric':
+          particleCount = 2;
+          spread = 8;
+          break;
+        default: // 'subtle'
+          particleCount = 2;
+          spread = 15;
+      }
+      
+      for (let j = 0; j < particleCount; j++) {
+        particlesRef.current.push(createParticle(
+          x + (Math.random() - 0.5) * spread,
+          y + (Math.random() - 0.5) * spread,
+          trackingType
+        ));
       }
     }
   };

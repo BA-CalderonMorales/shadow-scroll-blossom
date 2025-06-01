@@ -1,11 +1,15 @@
+
 import { useState } from 'react';
-import { Settings, Sun, Moon, MousePointer } from 'lucide-react';
+import { Settings, Sun, Moon, MousePointer, ChevronDown } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useSettings } from '@/contexts/SettingsContext';
 
 export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const { trackingType, setTrackingType, isDarkMode, setIsDarkMode } = useSettings();
 
   const toggleDarkMode = (checked: boolean) => {
@@ -15,6 +19,17 @@ export const SettingsMenu = () => {
   const handleTrackingChange = (value: string) => {
     setTrackingType(value);
   };
+
+  const trackingOptions = [
+    { value: 'subtle', label: 'Subtle Trail', description: 'Gentle floating particles' },
+    { value: 'comet', label: 'Trailing Comet', description: 'Elongated glowing trails' },
+    { value: 'fireworks', label: 'Fireworks', description: 'Explosive bursts of color' },
+    { value: 'lightning', label: 'Lightning', description: 'Electric branching effects' },
+    { value: 'galaxy', label: 'Galaxy Spiral', description: 'Swirling cosmic patterns' },
+    { value: 'neon', label: 'Neon Glow', description: 'Bright electric lines' },
+    { value: 'watercolor', label: 'Watercolor', description: 'Soft paint-like blending' },
+    { value: 'geometric', label: 'Geometric', description: 'Sharp angular shapes' }
+  ];
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -28,7 +43,7 @@ export const SettingsMenu = () => {
 
       {/* Settings Panel */}
       {isOpen && (
-        <div className="absolute top-10 right-0 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-sm shadow-lg">
+        <div className="absolute top-10 right-0 w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-sm shadow-lg">
           <div className="p-3 border-b border-gray-200/50 dark:border-gray-700/50">
             <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Settings</h3>
           </div>
@@ -53,29 +68,37 @@ export const SettingsMenu = () => {
               />
             </div>
 
-            {/* Tracking Animation Options */}
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <MousePointer className="w-3 h-3 text-gray-600 dark:text-gray-400" />
-                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                  Tracking Animation
-                </span>
-              </div>
-              <RadioGroup value={trackingType} onValueChange={handleTrackingChange} className="space-y-2">
+            {/* Tracking Animation Collapsible Section */}
+            <Collapsible open={isTrackingOpen} onOpenChange={setIsTrackingOpen}>
+              <CollapsibleTrigger className="flex items-center justify-between w-full py-2 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="subtle" id="subtle" className="w-3 h-3" />
-                  <label htmlFor="subtle" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
-                    Subtle Trail
-                  </label>
+                  <MousePointer className="w-3 h-3" />
+                  <span>Tracking Animation</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="comet" id="comet" className="w-3 h-3" />
-                  <label htmlFor="comet" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
-                    Trailing Comet
-                  </label>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isTrackingOpen ? 'rotate-180' : ''}`} />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="overflow-hidden">
+                <div className="pt-2">
+                  <ScrollArea className="h-32 w-full">
+                    <RadioGroup value={trackingType} onValueChange={handleTrackingChange} className="space-y-3 pr-2">
+                      {trackingOptions.map((option) => (
+                        <div key={option.value} className="flex items-start space-x-2">
+                          <RadioGroupItem value={option.value} id={option.value} className="w-3 h-3 mt-0.5" />
+                          <div className="flex-1 min-w-0">
+                            <label htmlFor={option.value} className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer block">
+                              {option.label}
+                            </label>
+                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+                              {option.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </ScrollArea>
                 </div>
-              </RadioGroup>
-            </div>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         </div>
       )}
