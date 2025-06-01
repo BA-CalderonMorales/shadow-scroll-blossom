@@ -12,7 +12,7 @@ const InteractiveCanvas: React.FC = () => {
   const touchesRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
-  const { trackingType } = useSettings();
+  const { trackingType, isDarkMode } = useSettings();
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
@@ -59,24 +59,33 @@ const InteractiveCanvas: React.FC = () => {
     };
   }, [trackingType]); // Re-run when tracking type changes
 
+  // Dynamic background styles based on dark mode
+  const backgroundStyle = isDarkMode 
+    ? 'radial-gradient(circle at center, #0c1220 0%, #080c14 100%)'
+    : 'radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%)';
+
+  const textColor = isDarkMode ? 'text-white/40' : 'text-gray-600/60';
+  const debugTextColor = isDarkMode ? 'text-white/30' : 'text-gray-500/50';
+  const signatureColor = isDarkMode ? 'text-white/20' : 'text-gray-400/40';
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gray-900">
+    <div className={`relative w-full h-screen overflow-hidden ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       <canvas
         ref={canvasRef}
         className="absolute inset-0 cursor-crosshair"
-        style={{ background: 'radial-gradient(circle at center, #0c1220 0%, #080c14 100%)' }}
+        style={{ background: backgroundStyle }}
       />
       
       {/* Subtle instructions */}
-      <div className="absolute top-6 left-6 text-white/40 text-xs font-light z-10">
+      <div className={`absolute top-6 left-6 ${textColor} text-xs font-light z-10`}>
         <p className="flex items-center gap-2">
-          <span className="w-1 h-1 bg-blue-300/60 rounded-full animate-pulse"></span>
+          <span className={`w-1 h-1 ${isDarkMode ? 'bg-blue-300/60' : 'bg-blue-500/60'} rounded-full animate-pulse`}></span>
           {isTouch ? 'Touch with multiple fingers' : 'Move and click to create'}
         </p>
       </div>
 
       {/* Debug info moved to bottom left */}
-      <div className="absolute bottom-6 left-6 text-white/30 text-xs z-10">
+      <div className={`absolute bottom-6 left-6 ${debugTextColor} text-xs z-10`}>
         <p>Active: {particlesRef.current?.length || 0}</p>
         {touchesRef.current.size > 0 && (
           <p>Touches: {touchesRef.current.size}</p>
@@ -84,7 +93,7 @@ const InteractiveCanvas: React.FC = () => {
       </div>
 
       {/* Subtle corner signature */}
-      <div className="absolute bottom-6 right-6 text-white/20 text-xs">
+      <div className={`absolute bottom-6 right-6 ${signatureColor} text-xs`}>
         Interactive Canvas
       </div>
     </div>

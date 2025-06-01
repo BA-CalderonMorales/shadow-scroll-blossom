@@ -177,13 +177,18 @@ export const updateParticle = (particle: Particle): Particle => {
   }
 };
 
-export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle): void => {
+export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, isDarkMode: boolean = true): void => {
   const lifeRatio = particle.life / particle.maxLife;
   const alpha = Math.max(0, lifeRatio * particle.opacity);
   
   if (alpha <= 0.01) return;
 
   ctx.save();
+  
+  // Adjust hue and lightness based on dark mode
+  const adjustedHue = particle.hue;
+  const lightness = isDarkMode ? 70 : 45; // Lighter in dark mode, darker in light mode
+  const saturation = isDarkMode ? 80 : 60; // More saturated in dark mode
   
   switch (particle.trackingType) {
     case 'comet':
@@ -198,9 +203,9 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
         particle.x,
         particle.y
       );
-      gradient.addColorStop(0, `hsla(${particle.hue}, 80%, 60%, 0)`);
-      gradient.addColorStop(0.3, `hsla(${particle.hue}, 90%, 70%, ${alpha * 0.3})`);
-      gradient.addColorStop(1, `hsla(${particle.hue}, 100%, 80%, ${alpha * 0.8})`);
+      gradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation}%, ${lightness - 10}%, 0)`);
+      gradient.addColorStop(0.3, `hsla(${adjustedHue}, ${saturation + 10}%, ${lightness}%, ${alpha * 0.3})`);
+      gradient.addColorStop(1, `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha * 0.8})`);
       
       // Draw elongated trail
       ctx.fillStyle = gradient;
@@ -217,7 +222,7 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
       ctx.fill();
       
       // Bright core
-      ctx.fillStyle = `hsla(${particle.hue}, 100%, 90%, ${alpha})`;
+      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 20}%, ${alpha})`;
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size * 0.6, 0, Math.PI * 2);
       ctx.fill();
@@ -225,7 +230,7 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
       
     case 'fireworks':
       // Bright explosive particles
-      ctx.fillStyle = `hsla(${particle.hue}, 100%, 70%, ${alpha})`;
+      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness}%, ${alpha})`;
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
       ctx.fill();
@@ -235,15 +240,15 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
         particle.x, particle.y, 0,
         particle.x, particle.y, particle.size * 3
       );
-      fireworkGradient.addColorStop(0, `hsla(${particle.hue}, 100%, 80%, ${alpha * 0.6})`);
-      fireworkGradient.addColorStop(1, `hsla(${particle.hue}, 100%, 60%, 0)`);
+      fireworkGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha * 0.6})`);
+      fireworkGradient.addColorStop(1, `hsla(${adjustedHue}, ${saturation}%, ${lightness - 10}%, 0)`);
       ctx.fillStyle = fireworkGradient;
       ctx.fill();
       break;
       
     case 'lightning':
       // Sharp electric lines
-      ctx.strokeStyle = `hsla(${particle.hue}, 100%, 80%, ${alpha})`;
+      ctx.strokeStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha})`;
       ctx.lineWidth = particle.size;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -252,7 +257,7 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
       ctx.stroke();
       
       // Bright core
-      ctx.fillStyle = `hsla(${particle.hue}, 100%, 95%, ${alpha})`;
+      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 25}%, ${alpha})`;
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size * 0.5, 0, Math.PI * 2);
       ctx.fill();
@@ -264,9 +269,9 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
         particle.x, particle.y, 0,
         particle.x, particle.y, particle.size * 4
       );
-      galaxyGradient.addColorStop(0, `hsla(${particle.hue}, 80%, 70%, ${alpha})`);
-      galaxyGradient.addColorStop(0.5, `hsla(${particle.hue + 20}, 70%, 60%, ${alpha * 0.5})`);
-      galaxyGradient.addColorStop(1, `hsla(${particle.hue + 40}, 60%, 50%, 0)`);
+      galaxyGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation}%, ${lightness}%, ${alpha})`);
+      galaxyGradient.addColorStop(0.5, `hsla(${adjustedHue + 20}, ${saturation - 10}%, ${lightness - 10}%, ${alpha * 0.5})`);
+      galaxyGradient.addColorStop(1, `hsla(${adjustedHue + 40}, ${saturation - 20}%, ${lightness - 20}%, 0)`);
       
       ctx.fillStyle = galaxyGradient;
       ctx.beginPath();
@@ -276,9 +281,9 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
       
     case 'neon':
       // Bright neon lines
-      ctx.shadowColor = `hsl(${particle.hue}, 100%, 70%)`;
+      ctx.shadowColor = `hsl(${adjustedHue}, ${saturation + 20}%, ${lightness})`;
       ctx.shadowBlur = 10;
-      ctx.strokeStyle = `hsla(${particle.hue}, 100%, 80%, ${alpha})`;
+      ctx.strokeStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha})`;
       ctx.lineWidth = particle.size;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -294,9 +299,10 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
         particle.x, particle.y, 0,
         particle.x, particle.y, particle.size * 2
       );
-      waterGradient.addColorStop(0, `hsla(${particle.hue}, 60%, 70%, ${alpha * 0.3})`);
-      waterGradient.addColorStop(0.7, `hsla(${particle.hue + 30}, 50%, 60%, ${alpha * 0.2})`);
-      waterGradient.addColorStop(1, `hsla(${particle.hue + 60}, 40%, 50%, 0)`);
+      const waterLightness = isDarkMode ? lightness - 10 : lightness + 20;
+      waterGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation - 20}%, ${waterLightness}%, ${alpha * 0.3})`);
+      waterGradient.addColorStop(0.7, `hsla(${adjustedHue + 30}, ${saturation - 30}%, ${waterLightness - 10}%, ${alpha * 0.2})`);
+      waterGradient.addColorStop(1, `hsla(${adjustedHue + 60}, ${saturation - 40}%, ${waterLightness - 20}%, 0)`);
       
       ctx.fillStyle = waterGradient;
       ctx.beginPath();
@@ -306,7 +312,7 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
       
     case 'geometric':
       // Sharp geometric shapes
-      ctx.fillStyle = `hsla(${particle.hue}, 90%, 60%, ${alpha})`;
+      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 10}%, ${lightness - 10}%, ${alpha})`;
       ctx.beginPath();
       
       // Draw a rotating square
@@ -329,9 +335,10 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
         particle.x, particle.y, 0,
         particle.x, particle.y, particle.size * glowMultiplier
       );
-      subtleGradient.addColorStop(0, `hsla(${particle.hue}, 60%, 80%, ${alpha * 0.4})`);
-      subtleGradient.addColorStop(0.4, `hsla(${particle.hue}, 70%, 60%, ${alpha * 0.2})`);
-      subtleGradient.addColorStop(1, `hsla(${particle.hue}, 80%, 40%, 0)`);
+      const subtleLightness = isDarkMode ? lightness + 10 : lightness - 15;
+      subtleGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation - 20}%, ${subtleLightness}%, ${alpha * 0.4})`);
+      subtleGradient.addColorStop(0.4, `hsla(${adjustedHue}, ${saturation - 10}%, ${subtleLightness - 20}%, ${alpha * 0.2})`);
+      subtleGradient.addColorStop(1, `hsla(${adjustedHue}, ${saturation}%, ${subtleLightness - 40}%, 0)`);
       
       ctx.fillStyle = subtleGradient;
       ctx.beginPath();
@@ -339,7 +346,7 @@ export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle):
       ctx.fill();
 
       // Very subtle inner core
-      ctx.fillStyle = `hsla(${particle.hue}, 70%, 85%, ${alpha * 0.6})`;
+      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation - 10}%, ${subtleLightness + 15}%, ${alpha * 0.6})`;
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size * coreMultiplier, 0, Math.PI * 2);
       ctx.fill();

@@ -3,12 +3,14 @@ import { useRef, useEffect } from 'react';
 import { Particle } from '@/types/particle';
 import { updateParticle, drawParticle, isParticleAlive } from '@/utils/particleUtils';
 import { clearCanvas } from '@/utils/canvasUtils';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export const useCanvasAnimation = (
   canvasRef: React.RefObject<HTMLCanvasElement>,
   particlesRef: React.MutableRefObject<Particle[]>
 ) => {
   const animationRef = useRef<number>();
+  const { isDarkMode } = useSettings();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,7 +20,7 @@ export const useCanvasAnimation = (
     if (!ctx) return;
 
     const animate = () => {
-      clearCanvas(ctx, canvas);
+      clearCanvas(ctx, canvas, isDarkMode);
 
       // Update and draw particles
       const activeParticles: Particle[] = [];
@@ -27,7 +29,7 @@ export const useCanvasAnimation = (
         const updatedParticle = updateParticle(particle);
         
         if (isParticleAlive(updatedParticle)) {
-          drawParticle(ctx, updatedParticle);
+          drawParticle(ctx, updatedParticle, isDarkMode);
           activeParticles.push(updatedParticle);
         }
       }
@@ -44,7 +46,7 @@ export const useCanvasAnimation = (
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [canvasRef, particlesRef]);
+  }, [canvasRef, particlesRef, isDarkMode]);
 
   return animationRef;
 };
