@@ -1,6 +1,6 @@
-
 import { Particle } from '@/types/particle';
-import { createParticle } from './particleUtils';
+import { createParticlesForType } from '@/utils/particleUtils';
+import React from 'react';
 
 export const createMouseEventHandlers = (
   canvas: HTMLCanvasElement,
@@ -13,94 +13,34 @@ export const createMouseEventHandlers = (
     mouseRef.current.x = e.clientX - rect.left;
     mouseRef.current.y = e.clientY - rect.top;
 
+    // Don't create particles if tracking is disabled
+    if (trackingType === 'none') return;
+
     if (mouseRef.current.isPressed) {
-      let particleCount = 2;
-      let spread = 20;
-      
-      switch (trackingType) {
-        case 'comet':
-          particleCount = 1;
-          break;
-        case 'fireworks':
-          particleCount = 3;
-          spread = 30;
-          break;
-        case 'lightning':
-          particleCount = 1;
-          break;
-        case 'galaxy':
-          particleCount = 2;
-          spread = 15;
-          break;
-        case 'neon':
-          particleCount = 1;
-          break;
-        case 'watercolor':
-          particleCount = 1;
-          spread = 25;
-          break;
-        case 'geometric':
-          particleCount = 2;
-          spread = 10;
-          break;
-        default: // 'subtle'
-          particleCount = 2;
-          spread = 20;
-      }
-      
-      for (let i = 0; i < particleCount; i++) {
-        particlesRef.current.push(createParticle(
-          mouseRef.current.x + (Math.random() - 0.5) * spread,
-          mouseRef.current.y + (Math.random() - 0.5) * spread,
-          trackingType
-        ));
-      }
+      const particles = createParticlesForType(
+        mouseRef.current.x,
+        mouseRef.current.y,
+        trackingType
+      );
+      particlesRef.current.push(...particles);
     }
   };
 
   const handleMouseDown = (e: MouseEvent) => {
     mouseRef.current.isPressed = true;
+    
+    // Don't create particles if tracking is disabled
+    if (trackingType === 'none') return;
+
     const rect = canvas.getBoundingClientRect();
-    mouseRef.current.x = e.clientX - rect.left;
-    mouseRef.current.y = e.clientY - rect.top;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     
-    console.log('Mouse down', { x: mouseRef.current.x, y: mouseRef.current.y });
-    
-    let burstCount = 3;
-    
-    switch (trackingType) {
-      case 'comet':
-        burstCount = 2;
-        break;
-      case 'fireworks':
-        burstCount = 8;
-        break;
-      case 'lightning':
-        burstCount = 5;
-        break;
-      case 'galaxy':
-        burstCount = 4;
-        break;
-      case 'neon':
-        burstCount = 3;
-        break;
-      case 'watercolor':
-        burstCount = 2;
-        break;
-      case 'geometric':
-        burstCount = 6;
-        break;
-      default: // 'subtle'
-        burstCount = 3;
-    }
-    
-    for (let i = 0; i < burstCount; i++) {
-      particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
-    }
+    const particles = createParticlesForType(x, y, trackingType);
+    particlesRef.current.push(...particles);
   };
 
   const handleMouseUp = () => {
-    console.log('Mouse up');
     mouseRef.current.isPressed = false;
   };
 
@@ -118,104 +58,40 @@ export const createTouchEventHandlers = (
     e.preventDefault();
     setIsTouch(true);
     
-    for (let i = 0; i < e.touches.length; i++) {
-      const touch = e.touches[i];
-      const rect = canvas.getBoundingClientRect();
+    // Don't create particles if tracking is disabled
+    if (trackingType === 'none') return;
+
+    const rect = canvas.getBoundingClientRect();
+    
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const touch = e.changedTouches[i];
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
       
       touchesRef.current.set(touch.identifier, { x, y });
       
-      console.log('Touch start', { id: touch.identifier, x, y, totalTouches: touchesRef.current.size });
-      
-      let burstCount = 3;
-      
-      switch (trackingType) {
-        case 'comet':
-          burstCount = 2;
-          break;
-        case 'fireworks':
-          burstCount = 8;
-          break;
-        case 'lightning':
-          burstCount = 5;
-          break;
-        case 'galaxy':
-          burstCount = 4;
-          break;
-        case 'neon':
-          burstCount = 3;
-          break;
-        case 'watercolor':
-          burstCount = 2;
-          break;
-        case 'geometric':
-          burstCount = 6;
-          break;
-        default: // 'subtle'
-          burstCount = 3;
-      }
-      
-      for (let j = 0; j < burstCount; j++) {
-        particlesRef.current.push(createParticle(x, y, trackingType));
-      }
+      const particles = createParticlesForType(x, y, trackingType);
+      particlesRef.current.push(...particles);
     }
   };
 
   const handleTouchMove = (e: TouchEvent) => {
     e.preventDefault();
+    
+    // Don't create particles if tracking is disabled
+    if (trackingType === 'none') return;
+
     const rect = canvas.getBoundingClientRect();
     
-    for (let i = 0; i < e.touches.length; i++) {
-      const touch = e.touches[i];
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const touch = e.changedTouches[i];
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
       
       touchesRef.current.set(touch.identifier, { x, y });
-
-      console.log('Touch move', { id: touch.identifier, x, y });
-
-      let particleCount = 2;
-      let spread = 15;
       
-      switch (trackingType) {
-        case 'comet':
-          particleCount = 1;
-          break;
-        case 'fireworks':
-          particleCount = 3;
-          spread = 25;
-          break;
-        case 'lightning':
-          particleCount = 1;
-          break;
-        case 'galaxy':
-          particleCount = 2;
-          spread = 12;
-          break;
-        case 'neon':
-          particleCount = 1;
-          break;
-        case 'watercolor':
-          particleCount = 1;
-          spread = 20;
-          break;
-        case 'geometric':
-          particleCount = 2;
-          spread = 8;
-          break;
-        default: // 'subtle'
-          particleCount = 2;
-          spread = 15;
-      }
-      
-      for (let j = 0; j < particleCount; j++) {
-        particlesRef.current.push(createParticle(
-          x + (Math.random() - 0.5) * spread,
-          y + (Math.random() - 0.5) * spread,
-          trackingType
-        ));
-      }
+      const particles = createParticlesForType(x, y, trackingType);
+      particlesRef.current.push(...particles);
     }
   };
 
@@ -225,7 +101,10 @@ export const createTouchEventHandlers = (
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
       touchesRef.current.delete(touch.identifier);
-      console.log('Touch end', { id: touch.identifier, remainingTouches: touchesRef.current.size });
+    }
+    
+    if (touchesRef.current.size === 0) {
+      setIsTouch(false);
     }
   };
 

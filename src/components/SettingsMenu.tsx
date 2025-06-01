@@ -21,6 +21,7 @@ export const SettingsMenu = () => {
   };
 
   const trackingOptions = [
+    { value: 'none', label: 'None', description: 'No tracking animations' },
     { value: 'subtle', label: 'Subtle Trail', description: 'Gentle floating particles' },
     { value: 'comet', label: 'Trailing Comet', description: 'Elongated glowing trails' },
     { value: 'fireworks', label: 'Fireworks', description: 'Explosive bursts of color' },
@@ -79,23 +80,29 @@ export const SettingsMenu = () => {
               </CollapsibleTrigger>
               <CollapsibleContent className="overflow-hidden">
                 <div className="pt-2">
-                  <ScrollArea className="h-32 w-full">
-                    <RadioGroup value={trackingType} onValueChange={handleTrackingChange} className="space-y-3 pr-2">
-                      {trackingOptions.map((option) => (
-                        <div key={option.value} className="flex items-start space-x-2">
-                          <RadioGroupItem value={option.value} id={option.value} className="w-3 h-3 mt-0.5" />
-                          <div className="flex-1 min-w-0">
-                            <label htmlFor={option.value} className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer block">
-                              {option.label}
-                            </label>
-                            <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
-                              {option.description}
-                            </p>
+                  <div className="relative">
+                    {/* Scroll gradient indicators */}
+                    <div className="absolute top-0 left-0 right-2 h-2 bg-gradient-to-b from-white/80 to-transparent dark:from-gray-900/80 pointer-events-none z-10" />
+                    <div className="absolute bottom-0 left-0 right-2 h-2 bg-gradient-to-t from-white/80 to-transparent dark:from-gray-900/80 pointer-events-none z-10" />
+                    
+                    <ScrollArea className="h-32 w-full border border-gray-200/30 dark:border-gray-700/30 rounded bg-gray-50/30 dark:bg-gray-800/30">
+                      <RadioGroup value={trackingType} onValueChange={handleTrackingChange} className="space-y-3 p-2">
+                        {trackingOptions.map((option) => (
+                          <div key={option.value} className="flex items-start space-x-2">
+                            <RadioGroupItem value={option.value} id={option.value} className="w-3 h-3 mt-0.5" />
+                            <div className="flex-1 min-w-0">
+                              <label htmlFor={option.value} className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer block">
+                                {option.label}
+                              </label>
+                              <p className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+                                {option.description}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </ScrollArea>
+                        ))}
+                      </RadioGroup>
+                    </ScrollArea>
+                  </div>
                 </div>
               </CollapsibleContent>
             </Collapsible>
