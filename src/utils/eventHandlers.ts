@@ -1,5 +1,5 @@
 import { Particle } from '@/types/particle';
-import { createParticlesForType } from '@/utils/particleUtils';
+import { createParticlesForType } from '@/utils/particleFactory';
 import React from 'react';
 
 export const createMouseEventHandlers = (
