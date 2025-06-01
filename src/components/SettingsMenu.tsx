@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Settings, Sun, Moon, MousePointer, ChevronDown } from 'lucide-react';
+import { Settings, Sun, Moon, MousePointer, ChevronDown, Circle, CheckCircle } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -31,6 +31,8 @@ export const SettingsMenu = () => {
     { value: 'watercolor', label: 'Watercolor', description: 'Soft paint-like blending' },
     { value: 'geometric', label: 'Geometric', description: 'Sharp angular shapes' }
   ];
+
+  const isAnimationActive = trackingType !== 'none';
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -75,6 +77,11 @@ export const SettingsMenu = () => {
                 <div className="flex items-center space-x-2">
                   <MousePointer className="w-3 h-3" />
                   <span>Tracking Animation</span>
+                  {isAnimationActive ? (
+                    <CheckCircle className="w-3 h-3 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <Circle className="w-3 h-3 text-gray-400 dark:text-gray-500" />
+                  )}
                 </div>
                 <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isTrackingOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
@@ -82,10 +89,10 @@ export const SettingsMenu = () => {
                 <div className="pt-2">
                   <div className="relative">
                     {/* Scroll gradient indicators */}
-                    <div className="absolute top-0 left-0 right-2 h-2 bg-gradient-to-b from-white/80 to-transparent dark:from-gray-900/80 pointer-events-none z-10" />
-                    <div className="absolute bottom-0 left-0 right-2 h-2 bg-gradient-to-t from-white/80 to-transparent dark:from-gray-900/80 pointer-events-none z-10" />
+                    <div className="absolute top-0 left-0 right-2 h-3 bg-gradient-to-b from-white/90 to-transparent dark:from-gray-900/90 pointer-events-none z-10 rounded-t" />
+                    <div className="absolute bottom-0 left-0 right-2 h-3 bg-gradient-to-t from-white/90 to-transparent dark:from-gray-900/90 pointer-events-none z-10 rounded-b" />
                     
-                    <ScrollArea className="h-32 w-full border border-gray-200/30 dark:border-gray-700/30 rounded bg-gray-50/30 dark:bg-gray-800/30">
+                    <ScrollArea className="h-32 w-full border border-gray-300/50 dark:border-gray-600/50 rounded bg-gray-50/50 dark:bg-gray-800/50 shadow-inner">
                       <RadioGroup value={trackingType} onValueChange={handleTrackingChange} className="space-y-3 p-2">
                         {trackingOptions.map((option) => (
                           <div key={option.value} className="flex items-start space-x-2">
