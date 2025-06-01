@@ -1,18 +1,33 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, Sun, Moon } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
 export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check if dark mode is already active or if user prefers dark mode
+    return document.documentElement.classList.contains('dark') || 
+           window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    // Apply the initial dark mode state
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   const toggleDarkMode = (checked: boolean) => {
     setIsDarkMode(checked);
     if (checked) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('darkMode', 'true');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('darkMode', 'false');
     }
   };
 
