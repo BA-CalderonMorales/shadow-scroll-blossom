@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Settings, Sun, Moon, MousePointer, ChevronDown, Circle, CheckCircle, Image, Sparkles } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -61,13 +62,16 @@ export const SettingsMenu = () => {
   ];
 
   const particleStyleOptions = [
-    { value: 'default', label: 'Classic', description: 'Standard circular particles' },
-    { value: 'glow', label: 'Glowing Orbs', description: 'Soft luminous spheres' },
-    { value: 'crystalline', label: 'Crystal Shards', description: 'Sharp geometric crystals' },
-    { value: 'plasma', label: 'Plasma Bubbles', description: 'Energy-filled spheres' },
-    { value: 'stardust', label: 'Stardust', description: 'Twinkling star particles' },
-    { value: 'energy', label: 'Energy Cores', description: 'Pulsing power sources' },
-    { value: 'ethereal', label: 'Ethereal Wisps', description: 'Ghostly floating forms' }
+    { value: 'default', label: 'Classic Dots', description: 'Simple circular particles' },
+    { value: 'glow', label: 'Radiant Orbs', description: 'Multi-layered glowing spheres' },
+    { value: 'crystalline', label: 'Crystal Shards', description: 'Faceted geometric crystals' },
+    { value: 'plasma', label: 'Plasma Energy', description: 'Turbulent energy with tendrils' },
+    { value: 'stardust', label: 'Stellar Bursts', description: 'Twinkling star-shaped particles' },
+    { value: 'energy', label: 'Power Cores', description: 'Pulsing rings with bright cores' },
+    { value: 'ethereal', label: 'Ghost Wisps', description: 'Flowing translucent forms' },
+    { value: 'digital', label: 'Pixel Matrix', description: 'Blocky digital grid patterns' },
+    { value: 'flame', label: 'Fire Tongues', description: 'Flickering flame-like shapes' },
+    { value: 'electric', label: 'Lightning Bolts', description: 'Jagged electric arcs' }
   ];
 
   const isAnimationActive = trackingType !== 'none';
@@ -173,7 +177,7 @@ export const SettingsMenu = () => {
                     <div className="absolute top-0 left-0 right-2 h-3 bg-gradient-to-b from-white/90 to-transparent dark:from-gray-900/90 pointer-events-none z-10 rounded-t" />
                     <div className="absolute bottom-0 left-0 right-2 h-3 bg-gradient-to-t from-white/90 to-transparent dark:from-gray-900/90 pointer-events-none z-10 rounded-b" />
                     
-                    <ScrollArea className="h-32 w-full border border-gray-300/50 dark:border-gray-600/50 rounded bg-gray-50/50 dark:bg-gray-800/50 shadow-inner">
+                    <ScrollArea className="h-40 w-full border border-gray-300/50 dark:border-gray-600/50 rounded bg-gray-50/50 dark:bg-gray-800/50 shadow-inner">
                       <RadioGroup value={particleStyle} onValueChange={handleParticleStyleChange} className="space-y-3 p-2">
                         {particleStyleOptions.map((option) => (
                           <div key={option.value} className="flex items-start space-x-2">
