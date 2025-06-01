@@ -87,6 +87,25 @@ export const createParticle = (x: number, y: number, trackingType: string = 'sub
   return particle;
 };
 
+export const createParticlesForType = (x: number, y: number, trackingType: string): Particle[] => {
+  // For most effects, create 1-3 particles per interaction
+  const particleCount = trackingType === 'fireworks' ? Math.floor(Math.random() * 3) + 2 : 
+                       trackingType === 'lightning' ? Math.floor(Math.random() * 2) + 1 :
+                       trackingType === 'none' ? 0 : 1;
+  
+  const particles: Particle[] = [];
+  
+  for (let i = 0; i < particleCount; i++) {
+    // Add slight random offset for multiple particles
+    const offsetX = particleCount > 1 ? (Math.random() - 0.5) * 10 : 0;
+    const offsetY = particleCount > 1 ? (Math.random() - 0.5) * 10 : 0;
+    
+    particles.push(createParticle(x + offsetX, y + offsetY, trackingType));
+  }
+  
+  return particles;
+};
+
 export const updateParticle = (particle: Particle): Particle => {
   switch (particle.trackingType) {
     case 'comet':
