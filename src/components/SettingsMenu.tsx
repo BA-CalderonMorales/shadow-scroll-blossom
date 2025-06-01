@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Settings, Sun, Moon, MousePointer } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -70,9 +69,9 @@ export const SettingsMenu = () => {
                   </label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="dynamic" id="dynamic" className="w-3 h-3" />
-                  <label htmlFor="dynamic" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
-                    Dynamic Burst
+                  <RadioGroupItem value="comet" id="comet" className="w-3 h-3" />
+                  <label htmlFor="comet" className="text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
+                    Trailing Comet
                   </label>
                 </div>
               </RadioGroup>

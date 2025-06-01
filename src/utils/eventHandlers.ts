@@ -14,15 +14,26 @@ export const createMouseEventHandlers = (
     mouseRef.current.y = e.clientY - rect.top;
 
     if (mouseRef.current.isPressed) {
-      const particleCount = trackingType === 'dynamic' ? 4 : 2;
-      const spread = trackingType === 'dynamic' ? 30 : 20;
-      
-      for (let i = 0; i < particleCount; i++) {
+      if (trackingType === 'comet') {
+        // Comet creates fewer but more persistent particles
+        const particleCount = 1;
         particlesRef.current.push(createParticle(
-          mouseRef.current.x + (Math.random() - 0.5) * spread,
-          mouseRef.current.y + (Math.random() - 0.5) * spread,
+          mouseRef.current.x,
+          mouseRef.current.y,
           trackingType
         ));
+      } else {
+        // Subtle trail
+        const particleCount = 2;
+        const spread = 20;
+        
+        for (let i = 0; i < particleCount; i++) {
+          particlesRef.current.push(createParticle(
+            mouseRef.current.x + (Math.random() - 0.5) * spread,
+            mouseRef.current.y + (Math.random() - 0.5) * spread,
+            trackingType
+          ));
+        }
       }
     }
   };
@@ -35,9 +46,18 @@ export const createMouseEventHandlers = (
     
     console.log('Mouse down', { x: mouseRef.current.x, y: mouseRef.current.y });
     
-    const burstCount = trackingType === 'dynamic' ? 8 : 3;
-    for (let i = 0; i < burstCount; i++) {
-      particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
+    if (trackingType === 'comet') {
+      // Comet creates a small initial burst
+      const burstCount = 2;
+      for (let i = 0; i < burstCount; i++) {
+        particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
+      }
+    } else {
+      // Subtle trail
+      const burstCount = 3;
+      for (let i = 0; i < burstCount; i++) {
+        particlesRef.current.push(createParticle(mouseRef.current.x, mouseRef.current.y, trackingType));
+      }
     }
   };
 
@@ -70,9 +90,18 @@ export const createTouchEventHandlers = (
       
       console.log('Touch start', { id: touch.identifier, x, y, totalTouches: touchesRef.current.size });
       
-      const burstCount = trackingType === 'dynamic' ? 8 : 3;
-      for (let j = 0; j < burstCount; j++) {
-        particlesRef.current.push(createParticle(x, y, trackingType));
+      if (trackingType === 'comet') {
+        // Comet creates fewer initial particles
+        const burstCount = 2;
+        for (let j = 0; j < burstCount; j++) {
+          particlesRef.current.push(createParticle(x, y, trackingType));
+        }
+      } else {
+        // Subtle trail
+        const burstCount = 3;
+        for (let j = 0; j < burstCount; j++) {
+          particlesRef.current.push(createParticle(x, y, trackingType));
+        }
       }
     }
   };
@@ -90,15 +119,22 @@ export const createTouchEventHandlers = (
 
       console.log('Touch move', { id: touch.identifier, x, y });
 
-      const particleCount = trackingType === 'dynamic' ? 4 : 2;
-      const spread = trackingType === 'dynamic' ? 25 : 15;
-      
-      for (let j = 0; j < particleCount; j++) {
-        particlesRef.current.push(createParticle(
-          x + (Math.random() - 0.5) * spread,
-          y + (Math.random() - 0.5) * spread,
-          trackingType
-        ));
+      if (trackingType === 'comet') {
+        // Comet creates continuous single particles
+        const particleCount = 1;
+        particlesRef.current.push(createParticle(x, y, trackingType));
+      } else {
+        // Subtle trail
+        const particleCount = 2;
+        const spread = 15;
+        
+        for (let j = 0; j < particleCount; j++) {
+          particlesRef.current.push(createParticle(
+            x + (Math.random() - 0.5) * spread,
+            y + (Math.random() - 0.5) * spread,
+            trackingType
+          ));
+        }
       }
     }
   };
