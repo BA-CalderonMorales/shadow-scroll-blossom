@@ -1,107 +1,131 @@
 
 import { Particle } from '@/types/particle';
 
-export const createParticle = (x: number, y: number, trackingType: string = 'subtle'): Particle => {
-  const angle = Math.random() * Math.PI * 2;
-  
-  let speed, life, size, hue, opacity;
-  
-  switch (trackingType) {
-    case 'comet':
-      speed = Math.random() * 0.8 + 0.2;
-      life = 240;
-      size = Math.random() * 1.5 + 0.5;
-      hue = Math.random() * 30 + 290; // Purple/magenta range
-      opacity = Math.random() * 0.8 + 0.4;
-      break;
-      
-    case 'fireworks':
-      speed = Math.random() * 3 + 1;
-      life = 180;
-      size = Math.random() * 3 + 1;
-      hue = Math.random() * 360; // Full color spectrum
-      opacity = Math.random() * 0.9 + 0.3;
-      break;
-      
-    case 'lightning':
-      speed = Math.random() * 4 + 2;
-      life = 60;
-      size = Math.random() * 1 + 0.5;
-      hue = Math.random() * 60 + 180; // Blue/cyan range
-      opacity = Math.random() * 1 + 0.6;
-      break;
-      
-    case 'galaxy':
-      speed = Math.random() * 1 + 0.3;
-      life = 300;
-      size = Math.random() * 2 + 0.8;
-      hue = Math.random() * 80 + 260; // Purple/pink range
-      opacity = Math.random() * 0.7 + 0.2;
-      break;
-      
-    case 'neon':
-      speed = Math.random() * 2 + 0.5;
-      life = 150;
-      size = Math.random() * 1.5 + 1;
-      hue = [0, 60, 120, 180, 240, 300][Math.floor(Math.random() * 6)]; // Distinct neon colors
-      opacity = Math.random() * 0.8 + 0.5;
-      break;
-      
-    case 'watercolor':
-      speed = Math.random() * 0.5 + 0.1;
-      life = 400;
-      size = Math.random() * 4 + 2;
-      hue = Math.random() * 360;
-      opacity = Math.random() * 0.3 + 0.1;
-      break;
-      
-    case 'geometric':
-      speed = Math.random() * 2 + 1;
-      life = 120;
-      size = Math.random() * 2 + 1;
-      hue = [0, 30, 60, 180, 240, 300][Math.floor(Math.random() * 6)]; // Sharp color palette
-      opacity = Math.random() * 0.8 + 0.4;
-      break;
-      
-    default: // 'subtle'
-      speed = Math.random() * 1.5 + 0.5;
-      life = 120;
-      size = Math.random() * 2 + 1;
-      hue = Math.random() * 40 + 200; // Narrower blue range
-      opacity = Math.random() * 0.3 + 0.1;
-  }
-  
-  const particle = {
+export const createParticle = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle => {
+  const baseParticle = {
     x,
     y,
-    vx: Math.cos(angle) * speed,
-    vy: Math.sin(angle) * speed,
-    life,
-    maxLife: life,
-    size,
-    hue,
-    opacity,
-    trackingType // Store the tracking type with the particle
+    vx: (Math.random() - 0.5) * 2,
+    vy: (Math.random() - 0.5) * 2,
+    life: 1.0,
+    maxLife: 1.0,
+    size: Math.random() * 3 + 1,
+    color: getBackgroundAwareColor(backgroundType),
+    trail: [],
+    energy: Math.random() * 0.5 + 0.5,
   };
-  
-  console.log('Particle created at', { x, y, trackingType });
-  return particle;
+
+  // Apply background-specific particle behaviors
+  return applyBackgroundBehavior(baseParticle, backgroundType, trackingType);
 };
 
-export const createParticlesForType = (x: number, y: number, trackingType: string): Particle[] => {
-  // For most effects, create 1-3 particles per interaction
-  const particleCount = trackingType === 'fireworks' ? Math.floor(Math.random() * 3) + 2 : 
-                       trackingType === 'lightning' ? Math.floor(Math.random() * 2) + 1 :
-                       trackingType === 'none' ? 0 : 1;
-  
+const getBackgroundAwareColor = (backgroundType: string): string => {
+  switch (backgroundType) {
+    case 'cyberpunk':
+      const cyberpunkColors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff88'];
+      return cyberpunkColors[Math.floor(Math.random() * cyberpunkColors.length)];
+    
+    case 'nebula':
+      const nebulaColors = ['#8a2be2', '#4b0082', '#00bfff', '#9370db'];
+      return nebulaColors[Math.floor(Math.random() * nebulaColors.length)];
+    
+    case 'matrix':
+      const matrixColors = ['#00ff00', '#00cc00', '#008800', '#00ff88'];
+      return matrixColors[Math.floor(Math.random() * matrixColors.length)];
+    
+    case 'aurora':
+      const auroraColors = ['#00ff7f', '#40e0d0', '#8a2be2', '#00ffff'];
+      return auroraColors[Math.floor(Math.random() * auroraColors.length)];
+    
+    case 'synthwave':
+      const synthwaveColors = ['#ff1493', '#00ffff', '#ff4500', '#ff69b4'];
+      return synthwaveColors[Math.floor(Math.random() * synthwaveColors.length)];
+    
+    case 'ocean':
+      const oceanColors = ['#00bfff', '#1e90ff', '#0066cc', '#4169e1'];
+      return oceanColors[Math.floor(Math.random() * oceanColors.length)];
+    
+    default:
+      return `hsl(${Math.random() * 360}, 70%, 60%)`;
+  }
+};
+
+const applyBackgroundBehavior = (particle: Particle, backgroundType: string, trackingType: string): Particle => {
+  switch (backgroundType) {
+    case 'cyberpunk':
+      return {
+        ...particle,
+        vx: particle.vx * 1.5,
+        vy: particle.vy * 1.5,
+        maxLife: 2.0,
+        life: 2.0,
+        size: particle.size * 1.2,
+        energy: particle.energy * 1.3,
+      };
+    
+    case 'matrix':
+      return {
+        ...particle,
+        vy: Math.abs(particle.vy) + 2, // Falling effect like matrix code
+        vx: particle.vx * 0.3,
+        maxLife: 3.0,
+        life: 3.0,
+        size: Math.random() * 2 + 0.5,
+      };
+    
+    case 'nebula':
+      return {
+        ...particle,
+        vx: particle.vx * 0.8,
+        vy: particle.vy * 0.8,
+        maxLife: 4.0,
+        life: 4.0,
+        size: particle.size * 1.5,
+      };
+    
+    case 'aurora':
+      return {
+        ...particle,
+        vx: particle.vx + Math.sin(Date.now() * 0.001) * 0.5,
+        vy: particle.vy * 0.7,
+        maxLife: 3.5,
+        life: 3.5,
+        size: particle.size * 1.3,
+      };
+    
+    case 'synthwave':
+      return {
+        ...particle,
+        vx: particle.vx * 1.8,
+        vy: particle.vy * 0.5,
+        maxLife: 2.5,
+        life: 2.5,
+        size: particle.size * 0.8,
+        energy: particle.energy * 1.5,
+      };
+    
+    case 'ocean':
+      return {
+        ...particle,
+        vx: particle.vx + Math.sin(Date.now() * 0.002) * 0.3,
+        vy: particle.vy + Math.cos(Date.now() * 0.002) * 0.3,
+        maxLife: 3.0,
+        life: 3.0,
+        size: particle.size * 1.1,
+      };
+    
+    default:
+      return particle;
+  }
+};
+
+export const createMultipleParticles = (x: number, y: number, count: number, trackingType: string, backgroundType: string = 'none'): Particle[] => {
   const particles: Particle[] = [];
   
-  for (let i = 0; i < particleCount; i++) {
-    // Add slight random offset for multiple particles
-    const offsetX = particleCount > 1 ? (Math.random() - 0.5) * 10 : 0;
-    const offsetY = particleCount > 1 ? (Math.random() - 0.5) * 10 : 0;
-    
-    particles.push(createParticle(x + offsetX, y + offsetY, trackingType));
+  for (let i = 0; i < count; i++) {
+    const offsetX = x + (Math.random() - 0.5) * 20;
+    const offsetY = y + (Math.random() - 0.5) * 20;
+    particles.push(createParticle(offsetX, offsetY, trackingType, backgroundType));
   }
   
   return particles;

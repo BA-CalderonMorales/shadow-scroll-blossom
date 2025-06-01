@@ -10,7 +10,7 @@ export const useCanvasAnimation = (
   particlesRef: React.MutableRefObject<Particle[]>
 ) => {
   const animationRef = useRef<number>();
-  const { isDarkMode } = useSettings();
+  const { isDarkMode, backgroundType } = useSettings();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -29,7 +29,7 @@ export const useCanvasAnimation = (
         const updatedParticle = updateParticle(particle);
         
         if (isParticleAlive(updatedParticle)) {
-          drawParticle(ctx, updatedParticle, isDarkMode);
+          drawParticle(ctx, updatedParticle, isDarkMode, backgroundType);
           activeParticles.push(updatedParticle);
         }
       }
@@ -38,7 +38,7 @@ export const useCanvasAnimation = (
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    console.log('Starting animation');
+    console.log('Starting animation with background:', backgroundType);
     animate();
 
     return () => {
@@ -46,7 +46,7 @@ export const useCanvasAnimation = (
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [canvasRef, particlesRef, isDarkMode]);
+  }, [canvasRef, particlesRef, isDarkMode, backgroundType]);
 
   return animationRef;
 };

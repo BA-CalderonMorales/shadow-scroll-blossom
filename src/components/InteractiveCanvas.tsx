@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Particle } from '@/types/particle';
 import { setupCanvas } from '@/utils/canvasUtils';
@@ -22,16 +21,16 @@ const InteractiveCanvas: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    console.log('Canvas initialized with tracking type:', trackingType);
+    console.log('Canvas initialized with tracking type:', trackingType, 'background:', backgroundType);
     setupCanvas(canvas);
 
     // Set up resize handler
     const resizeCanvas = () => setupCanvas(canvas);
     window.addEventListener('resize', resizeCanvas);
 
-    // Create event handlers with current tracking type
-    const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef, trackingType);
-    const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch, trackingType);
+    // Create event handlers with current tracking type and background type
+    const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef, trackingType, backgroundType);
+    const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch, trackingType, backgroundType);
 
     // Add event listeners
     canvas.addEventListener('mousemove', mouseHandlers.handleMouseMove);
@@ -58,7 +57,7 @@ const InteractiveCanvas: React.FC = () => {
       
       touchesRef.current.clear();
     };
-  }, [trackingType]); // Re-run when tracking type changes
+  }, [trackingType, backgroundType]); // Re-run when tracking type or background changes
 
   // Dynamic background styles based on background type and dark mode
   const backgroundStyle = getBackgroundStyle(backgroundType, isDarkMode);

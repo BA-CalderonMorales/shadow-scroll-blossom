@@ -6,45 +6,48 @@ export const createMouseEventHandlers = (
   canvas: HTMLCanvasElement,
   particlesRef: React.MutableRefObject<Particle[]>,
   mouseRef: React.MutableRefObject<{ x: number; y: number; isPressed: boolean }>,
-  trackingType: string
+  trackingType: string,
+  backgroundType: string = 'none'
 ) => {
-  const handleMouseMove = (e: MouseEvent) => {
+  const getMousePos = (e: MouseEvent) => {
     const rect = canvas.getBoundingClientRect();
-    mouseRef.current.x = e.clientX - rect.left;
-    mouseRef.current.y = e.clientY - rect.top;
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  };
 
-    // Don't create particles if tracking is disabled
-    if (trackingType === 'none') return;
+  const handleMouseMove = (e: MouseEvent) => {
+    const pos = getMousePos(e);
+    mouseRef.current.x = pos.x;
+    mouseRef.current.y = pos.y;
 
-    if (mouseRef.current.isPressed) {
-      const particles = createParticlesForType(
-        mouseRef.current.x,
-        mouseRef.current.y,
-        trackingType
-      );
-      particlesRef.current.push(...particles);
+    if (trackingType !== 'none') {
+      const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType), trackingType, backgroundType);
+      particlesRef.current.push(...newParticles);
     }
   };
 
   const handleMouseDown = (e: MouseEvent) => {
     mouseRef.current.isPressed = true;
+    const pos = getMousePos(e);
     
-    // Don't create particles if tracking is disabled
-    if (trackingType === 'none') return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const particles = createParticlesForType(x, y, trackingType);
-    particlesRef.current.push(...particles);
+    if (trackingType !== 'none') {
+      const burstCount = getParticleCount(trackingType) * 3;
+      const newParticles = createMultipleParticles(pos.x, pos.y, burstCount, trackingType, backgroundType);
+      particlesRef.current.push(...newParticles);
+    }
   };
 
   const handleMouseUp = () => {
     mouseRef.current.isPressed = false;
   };
 
-  return { handleMouseMove, handleMouseDown, handleMouseUp };
+  return {
+    handleMouseMove,
+    handleMouseDown,
+    handleMouseUp
+  };
 };
 
 export const createTouchEventHandlers = (
@@ -52,61 +55,87 @@ export const createTouchEventHandlers = (
   particlesRef: React.MutableRefObject<Particle[]>,
   touchesRef: React.MutableRefObject<Map<number, { x: number; y: number }>>,
   setIsTouch: (isTouch: boolean) => void,
-  trackingType: string
+  trackingType: string,
+  backgroundType: string = 'none'
 ) => {
+  const getTouchPos = (touch: Touch) => {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+  };
+
   const handleTouchStart = (e: TouchEvent) => {
     e.preventDefault();
     setIsTouch(true);
-    
-    // Don't create particles if tracking is disabled
-    if (trackingType === 'none') return;
 
-    const rect = canvas.getBoundingClientRect();
-    
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      
-      touchesRef.current.set(touch.identifier, { x, y });
-      
-      const particles = createParticlesForType(x, y, trackingType);
-      particlesRef.current.push(...particles);
+      const pos = getTouchPos(touch);
+      touchesRef.current.set(touch.identifier, pos);
+
+      if (trackingType !== 'none') {
+        const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType) * 2, trackingType, backgroundType);
+        particlesRef.current.push(...newParticles);
+      }
     }
   };
 
   const handleTouchMove = (e: TouchEvent) => {
     e.preventDefault();
-    
-    // Don't create particles if tracking is disabled
-    if (trackingType === 'none') return;
 
-    const rect = canvas.getBoundingClientRect();
-    
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      
-      touchesRef.current.set(touch.identifier, { x, y });
-      
-      const particles = createParticlesForType(x, y, trackingType);
-      particlesRef.current.push(...particles);
+      const pos = getTouchPos(touch);
+      touchesRef.current.set(touch.identifier, pos);
+
+      if (trackingType !== 'none') {
+        const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType), trackingType, backgroundType);
+        particlesRef.current.push(...newParticles);
+      }
     }
   };
 
   const handleTouchEnd = (e: TouchEvent) => {
     e.preventDefault();
-    
+
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
       touchesRef.current.delete(touch.identifier);
     }
-    
+
     if (touchesRef.current.size === 0) {
       setIsTouch(false);
     }
   };
 
-  return { handleTouchStart, handleTouchMove, handleTouchEnd };
+  return {
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd
+  };
 };
+
+function getParticleCount(trackingType: string): number {
+  switch (trackingType) {
+    case 'none':
+      return 0;
+    case 'low':
+      return 10;
+    case 'medium':
+      return 20;
+    case 'high':
+      return 30;
+    default:
+      return 0;
+  }
+}
+
+function createMultipleParticles(x: number, y: number, count: number, trackingType: string, backgroundType: string): Particle[] {
+  const particles: Particle[] = [];
+  for (let i = 0; i < count; i++) {
+    particles.push(createParticlesForType(x, y, trackingType, backgroundType)[0]);
+  }
+  return particles;
+}

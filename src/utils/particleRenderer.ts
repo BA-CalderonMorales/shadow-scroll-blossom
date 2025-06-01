@@ -1,180 +1,171 @@
 
 import { Particle } from '@/types/particle';
 
-export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, isDarkMode: boolean = true): void => {
-  const lifeRatio = particle.life / particle.maxLife;
-  const alpha = Math.max(0, lifeRatio * particle.opacity);
+export const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle, isDarkMode: boolean = true, backgroundType: string = 'none'): void => {
+  const alpha = particle.life / particle.maxLife;
   
-  if (alpha <= 0.01) return;
-
-  ctx.save();
-  
-  // Adjust hue and lightness based on dark mode
-  const adjustedHue = particle.hue;
-  const lightness = isDarkMode ? 70 : 45; // Lighter in dark mode, darker in light mode
-  const saturation = isDarkMode ? 80 : 60; // More saturated in dark mode
-  
-  switch (particle.trackingType) {
-    case 'comet':
-      // Comet trail effect - elongated glow in direction of movement
-      const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-      const trailLength = Math.max(3, speed * 8);
-      
-      // Create gradient in direction of movement
-      const gradient = ctx.createLinearGradient(
-        particle.x - particle.vx * trailLength,
-        particle.y - particle.vy * trailLength,
-        particle.x,
-        particle.y
-      );
-      gradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation}%, ${lightness - 10}%, 0)`);
-      gradient.addColorStop(0.3, `hsla(${adjustedHue}, ${saturation + 10}%, ${lightness}%, ${alpha * 0.3})`);
-      gradient.addColorStop(1, `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha * 0.8})`);
-      
-      // Draw elongated trail
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.ellipse(
-        particle.x, 
-        particle.y, 
-        particle.size * 2, 
-        particle.size * 0.5, 
-        Math.atan2(particle.vy, particle.vx), 
-        0, 
-        Math.PI * 2
-      );
-      ctx.fill();
-      
-      // Bright core
-      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 20}%, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * 0.6, 0, Math.PI * 2);
-      ctx.fill();
+  // Apply background-specific rendering effects
+  switch (backgroundType) {
+    case 'cyberpunk':
+      drawCyberpunkParticle(ctx, particle, alpha);
       break;
-      
-    case 'fireworks':
-      // Bright explosive particles
-      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness}%, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Outer glow
-      const fireworkGradient = ctx.createRadialGradient(
-        particle.x, particle.y, 0,
-        particle.x, particle.y, particle.size * 3
-      );
-      fireworkGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha * 0.6})`);
-      fireworkGradient.addColorStop(1, `hsla(${adjustedHue}, ${saturation}%, ${lightness - 10}%, 0)`);
-      ctx.fillStyle = fireworkGradient;
-      ctx.fill();
+    
+    case 'matrix':
+      drawMatrixParticle(ctx, particle, alpha);
       break;
-      
-    case 'lightning':
-      // Sharp electric lines
-      ctx.strokeStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha})`;
-      ctx.lineWidth = particle.size;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(particle.x - particle.vx * 3, particle.y - particle.vy * 3);
-      ctx.lineTo(particle.x, particle.y);
-      ctx.stroke();
-      
-      // Bright core
-      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 25}%, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * 0.5, 0, Math.PI * 2);
-      ctx.fill();
+    
+    case 'nebula':
+      drawNebulaParticle(ctx, particle, alpha);
       break;
-      
-    case 'galaxy':
-      // Swirling cosmic effect
-      const galaxyGradient = ctx.createRadialGradient(
-        particle.x, particle.y, 0,
-        particle.x, particle.y, particle.size * 4
-      );
-      galaxyGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation}%, ${lightness}%, ${alpha})`);
-      galaxyGradient.addColorStop(0.5, `hsla(${adjustedHue + 20}, ${saturation - 10}%, ${lightness - 10}%, ${alpha * 0.5})`);
-      galaxyGradient.addColorStop(1, `hsla(${adjustedHue + 40}, ${saturation - 20}%, ${lightness - 20}%, 0)`);
-      
-      ctx.fillStyle = galaxyGradient;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
-      ctx.fill();
+    
+    case 'aurora':
+      drawAuroraParticle(ctx, particle, alpha);
       break;
-      
-    case 'neon':
-      // Bright neon lines
-      ctx.shadowColor = `hsl(${adjustedHue}, ${saturation + 20}%, ${lightness})`;
-      ctx.shadowBlur = 10;
-      ctx.strokeStyle = `hsla(${adjustedHue}, ${saturation + 20}%, ${lightness + 10}%, ${alpha})`;
-      ctx.lineWidth = particle.size;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(particle.x - particle.vx * 5, particle.y - particle.vy * 5);
-      ctx.lineTo(particle.x, particle.y);
-      ctx.stroke();
-      ctx.shadowBlur = 0;
+    
+    case 'synthwave':
+      drawSynthwaveParticle(ctx, particle, alpha);
       break;
-      
-    case 'watercolor':
-      // Soft, blended paint effect
-      const waterGradient = ctx.createRadialGradient(
-        particle.x, particle.y, 0,
-        particle.x, particle.y, particle.size * 2
-      );
-      const waterLightness = isDarkMode ? lightness - 10 : lightness + 20;
-      waterGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation - 20}%, ${waterLightness}%, ${alpha * 0.3})`);
-      waterGradient.addColorStop(0.7, `hsla(${adjustedHue + 30}, ${saturation - 30}%, ${waterLightness - 10}%, ${alpha * 0.2})`);
-      waterGradient.addColorStop(1, `hsla(${adjustedHue + 60}, ${saturation - 40}%, ${waterLightness - 20}%, 0)`);
-      
-      ctx.fillStyle = waterGradient;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * 2, 0, Math.PI * 2);
-      ctx.fill();
+    
+    case 'ocean':
+      drawOceanParticle(ctx, particle, alpha);
       break;
-      
-    case 'geometric':
-      // Sharp geometric shapes
-      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation + 10}%, ${lightness - 10}%, ${alpha})`;
-      ctx.beginPath();
-      
-      // Draw a rotating square
-      const angle = (particle.maxLife - particle.life) * 0.1;
-      const halfSize = particle.size;
-      ctx.translate(particle.x, particle.y);
-      ctx.rotate(angle);
-      ctx.rect(-halfSize, -halfSize, halfSize * 2, halfSize * 2);
-      ctx.fill();
-      ctx.resetTransform();
+    
+    default:
+      drawDefaultParticle(ctx, particle, alpha, isDarkMode);
       break;
-      
-    default: // 'subtle'
-      // Default subtle particle rendering
-      const glowMultiplier = 3;
-      const coreMultiplier = 0.8;
-      
-      // Soft outer glow
-      const subtleGradient = ctx.createRadialGradient(
-        particle.x, particle.y, 0,
-        particle.x, particle.y, particle.size * glowMultiplier
-      );
-      const subtleLightness = isDarkMode ? lightness + 10 : lightness - 15;
-      subtleGradient.addColorStop(0, `hsla(${adjustedHue}, ${saturation - 20}%, ${subtleLightness}%, ${alpha * 0.4})`);
-      subtleGradient.addColorStop(0.4, `hsla(${adjustedHue}, ${saturation - 10}%, ${subtleLightness - 20}%, ${alpha * 0.2})`);
-      subtleGradient.addColorStop(1, `hsla(${adjustedHue}, ${saturation}%, ${subtleLightness - 40}%, 0)`);
-      
-      ctx.fillStyle = subtleGradient;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * glowMultiplier, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Very subtle inner core
-      ctx.fillStyle = `hsla(${adjustedHue}, ${saturation - 10}%, ${subtleLightness + 15}%, ${alpha * 0.6})`;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size * coreMultiplier, 0, Math.PI * 2);
-      ctx.fill();
   }
+};
+
+const drawCyberpunkParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
+  // Glowing effect with electric feel
+  ctx.save();
+  ctx.globalAlpha = alpha;
   
+  // Outer glow
+  const gradient = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.size * 3);
+  gradient.addColorStop(0, particle.color);
+  gradient.addColorStop(1, 'transparent');
+  
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Core particle
+  ctx.fillStyle = particle.color;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.restore();
+};
+
+const drawMatrixParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
+  // Digital/pixelated effect
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  
+  const size = Math.floor(particle.size) + 1;
+  ctx.fillStyle = particle.color;
+  ctx.fillRect(Math.floor(particle.x), Math.floor(particle.y), size, size);
+  
+  // Add trailing effect
+  ctx.globalAlpha = alpha * 0.3;
+  ctx.fillRect(Math.floor(particle.x), Math.floor(particle.y) - size, size, size * 2);
+  
+  ctx.restore();
+};
+
+const drawNebulaParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
+  // Soft, cloudy effect
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.7;
+  
+  const gradient = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.size * 4);
+  gradient.addColorStop(0, particle.color);
+  gradient.addColorStop(0.5, particle.color + '88');
+  gradient.addColorStop(1, 'transparent');
+  
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y, particle.size * 4, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.restore();
+};
+
+const drawAuroraParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
+  // Flowing, wavy effect
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  
+  const waveOffset = Math.sin(Date.now() * 0.005 + particle.x * 0.01) * 2;
+  
+  const gradient = ctx.createLinearGradient(
+    particle.x - particle.size, particle.y + waveOffset,
+    particle.x + particle.size, particle.y + waveOffset
+  );
+  gradient.addColorStop(0, 'transparent');
+  gradient.addColorStop(0.5, particle.color);
+  gradient.addColorStop(1, 'transparent');
+  
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y + waveOffset, particle.size * 2, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.restore();
+};
+
+const drawSynthwaveParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
+  // Sharp, neon effect
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  
+  // Outer glow
+  ctx.shadowColor = particle.color;
+  ctx.shadowBlur = particle.size * 2;
+  
+  ctx.fillStyle = particle.color;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Reset shadow
+  ctx.shadowBlur = 0;
+  
+  ctx.restore();
+};
+
+const drawOceanParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
+  // Bubble-like effect with wave distortion
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.8;
+  
+  const waveX = Math.sin(Date.now() * 0.003 + particle.y * 0.01) * 1;
+  const waveY = Math.cos(Date.now() * 0.002 + particle.x * 0.01) * 1;
+  
+  const gradient = ctx.createRadialGradient(
+    particle.x + waveX, particle.y + waveY, 0,
+    particle.x + waveX, particle.y + waveY, particle.size * 2
+  );
+  gradient.addColorStop(0, particle.color + 'CC');
+  gradient.addColorStop(1, 'transparent');
+  
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(particle.x + waveX, particle.y + waveY, particle.size * 2, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.restore();
+};
+
+const drawDefaultParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number, isDarkMode: boolean): void => {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = particle.color;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 };
