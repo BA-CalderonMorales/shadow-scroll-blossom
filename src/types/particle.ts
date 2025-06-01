@@ -10,4 +10,7 @@ export interface Particle {
   hue: number;
   opacity: number;
   trackingType: string;
+  color: string;
+  trail: any[];
+  energy: number;
 }

@@ -1,7 +1,7 @@
-
 import { Particle } from '@/types/particle';
 
 export const createParticle = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle => {
+  const color = getBackgroundAwareColor(backgroundType);
   const baseParticle = {
     x,
     y,
@@ -10,13 +10,20 @@ export const createParticle = (x: number, y: number, trackingType: string, backg
     life: 1.0,
     maxLife: 1.0,
     size: Math.random() * 3 + 1,
-    color: getBackgroundAwareColor(backgroundType),
+    hue: Math.random() * 360,
+    opacity: 1.0,
+    trackingType,
+    color,
     trail: [],
     energy: Math.random() * 0.5 + 0.5,
   };
 
   // Apply background-specific particle behaviors
   return applyBackgroundBehavior(baseParticle, backgroundType, trackingType);
+};
+
+export const createParticlesForType = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle[] => {
+  return [createParticle(x, y, trackingType, backgroundType)];
 };
 
 const getBackgroundAwareColor = (backgroundType: string): string => {
