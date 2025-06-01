@@ -1,5 +1,6 @@
+
 import { Particle } from '@/types/particle';
-import { createParticlesForType } from '@/utils/particleFactory';
+import { createMultipleParticles } from '@/utils/particleFactory';
 import React from 'react';
 
 export const createMouseEventHandlers = (
@@ -121,21 +122,23 @@ function getParticleCount(trackingType: string): number {
   switch (trackingType) {
     case 'none':
       return 0;
-    case 'low':
-      return 10;
-    case 'medium':
-      return 20;
-    case 'high':
-      return 30;
+    case 'subtle':
+      return 2;
+    case 'comet':
+      return 3;
+    case 'fireworks':
+      return 8;
+    case 'lightning':
+      return 5;
+    case 'galaxy':
+      return 4;
+    case 'neon':
+      return 3;
+    case 'watercolor':
+      return 6;
+    case 'geometric':
+      return 4;
     default:
-      return 0;
+      return 2;
   }
-}
-
-function createMultipleParticles(x: number, y: number, count: number, trackingType: string, backgroundType: string): Particle[] {
-  const particles: Particle[] = [];
-  for (let i = 0; i < count; i++) {
-    particles.push(createParticlesForType(x, y, trackingType, backgroundType)[0]);
-  }
-  return particles;
 }
