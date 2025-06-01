@@ -1,17 +1,10 @@
 
 import { useState } from 'react';
-import { Menu, Sun, Moon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Settings, Sun, Moon } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 
 export const SettingsMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleDarkMode = (checked: boolean) => {
@@ -25,45 +18,42 @@ export const SettingsMenu = () => {
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-10 w-10 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 shadow-sm hover:bg-accent/50 transition-all duration-200"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="w-80">
-          <SheetHeader>
-            <SheetTitle>Settings</SheetTitle>
-          </SheetHeader>
-          <div className="mt-6 space-y-6">
+      {/* Settings Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-8 h-8 bg-black/10 dark:bg-white/10 backdrop-blur-sm border border-white/20 rounded-sm hover:bg-black/20 dark:hover:bg-white/20 transition-all duration-200 flex items-center justify-center"
+      >
+        <Settings className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+      </button>
+
+      {/* Settings Panel */}
+      {isOpen && (
+        <div className="absolute top-10 right-0 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-sm shadow-lg">
+          <div className="p-3 border-b border-gray-200/50 dark:border-gray-700/50">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Settings</h3>
+          </div>
+          
+          <div className="p-3 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  {isDarkMode ? (
-                    <Moon className="h-4 w-4" />
-                  ) : (
-                    <Sun className="h-4 w-4" />
-                  )}
-                  <span className="text-sm font-medium">
-                    {isDarkMode ? 'Dark' : 'Light'} Mode
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Toggle between light and dark themes
-                </p>
+              <div className="flex items-center space-x-2">
+                {isDarkMode ? (
+                  <Moon className="w-3 h-3 text-gray-600 dark:text-gray-400" />
+                ) : (
+                  <Sun className="w-3 h-3 text-gray-600 dark:text-gray-400" />
+                )}
+                <span className="text-xs text-gray-700 dark:text-gray-300">
+                  {isDarkMode ? 'Dark' : 'Light'} Mode
+                </span>
               </div>
               <Switch
                 checked={isDarkMode}
                 onCheckedChange={toggleDarkMode}
+                className="scale-75"
               />
             </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </div>
+      )}
     </div>
   );
 };
