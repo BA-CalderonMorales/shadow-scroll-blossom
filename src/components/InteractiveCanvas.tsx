@@ -73,8 +73,8 @@ const InteractiveCanvas: React.FC = () => {
         </p>
       </div>
 
-      {/* Minimal debug info */}
-      <div className="absolute top-6 right-6 text-white/30 text-xs z-10">
+      {/* Debug info moved to bottom left */}
+      <div className="absolute bottom-6 left-6 text-white/30 text-xs z-10">
         <p>Active: {particlesRef.current?.length || 0}</p>
         {touchesRef.current.size > 0 && (
           <p>Touches: {touchesRef.current.size}</p>

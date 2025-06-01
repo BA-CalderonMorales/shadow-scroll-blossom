@@ -17,20 +17,18 @@ export const SettingsMenu = () => {
   };
 
   return (
-    <>
-      {/* Settings Button - Top Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-8 h-8 bg-black/10 dark:bg-white/10 backdrop-blur-sm border border-white/20 rounded-sm hover:bg-black/20 dark:hover:bg-white/20 transition-all duration-200 flex items-center justify-center"
-        >
-          <Settings className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-        </button>
-      </div>
+    <div className="fixed top-4 right-4 z-50">
+      {/* Settings Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-8 h-8 bg-black/10 dark:bg-white/10 backdrop-blur-sm border border-white/20 rounded-sm hover:bg-black/20 dark:hover:bg-white/20 transition-all duration-200 flex items-center justify-center"
+      >
+        <Settings className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+      </button>
 
-      {/* Settings Panel - Bottom Left */}
+      {/* Settings Panel */}
       {isOpen && (
-        <div className="fixed bottom-4 left-4 z-50 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-sm shadow-lg">
+        <div className="absolute top-10 right-0 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-sm shadow-lg">
           <div className="p-3 border-b border-gray-200/50 dark:border-gray-700/50">
             <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Settings</h3>
           </div>
@@ -56,6 +54,6 @@ export const SettingsMenu = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
