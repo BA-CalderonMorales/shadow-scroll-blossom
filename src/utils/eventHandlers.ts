@@ -24,8 +24,14 @@ export const createMouseEventHandlers = (
     mouseRef.current.y = pos.y;
 
     if (trackingType !== 'none') {
+      // Reduced particle count for better performance
       const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType), trackingType, backgroundType);
       particlesRef.current.push(...newParticles);
+      
+      // Cap total particles for performance
+      if (particlesRef.current.length > 500) {
+        particlesRef.current = particlesRef.current.slice(-400);
+      }
     }
   };
 
@@ -34,7 +40,8 @@ export const createMouseEventHandlers = (
     const pos = getMousePos(e);
     
     if (trackingType !== 'none') {
-      const burstCount = getParticleCount(trackingType) * 3;
+      // Reduced burst count
+      const burstCount = getParticleCount(trackingType) * 2;
       const newParticles = createMultipleParticles(pos.x, pos.y, burstCount, trackingType, backgroundType);
       particlesRef.current.push(...newParticles);
     }
@@ -77,7 +84,8 @@ export const createTouchEventHandlers = (
       touchesRef.current.set(touch.identifier, pos);
 
       if (trackingType !== 'none') {
-        const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType) * 2, trackingType, backgroundType);
+        // Reduced particle count for touch
+        const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType), trackingType, backgroundType);
         particlesRef.current.push(...newParticles);
       }
     }
@@ -94,6 +102,11 @@ export const createTouchEventHandlers = (
       if (trackingType !== 'none') {
         const newParticles = createMultipleParticles(pos.x, pos.y, getParticleCount(trackingType), trackingType, backgroundType);
         particlesRef.current.push(...newParticles);
+        
+        // Cap particles for performance
+        if (particlesRef.current.length > 400) {
+          particlesRef.current = particlesRef.current.slice(-300);
+        }
       }
     }
   };
@@ -118,27 +131,28 @@ export const createTouchEventHandlers = (
   };
 };
 
+// Reduced particle counts for better performance
 function getParticleCount(trackingType: string): number {
   switch (trackingType) {
     case 'none':
       return 0;
     case 'subtle':
-      return 2;
+      return 1;
     case 'comet':
-      return 3;
+      return 1;
     case 'fireworks':
-      return 8;
-    case 'lightning':
-      return 5;
-    case 'galaxy':
-      return 4;
-    case 'neon':
       return 3;
-    case 'watercolor':
-      return 6;
-    case 'geometric':
-      return 4;
-    default:
+    case 'lightning':
       return 2;
+    case 'galaxy':
+      return 2;
+    case 'neon':
+      return 1;
+    case 'watercolor':
+      return 2;
+    case 'geometric':
+      return 2;
+    default:
+      return 1;
   }
 }

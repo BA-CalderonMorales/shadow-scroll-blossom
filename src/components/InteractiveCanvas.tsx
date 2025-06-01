@@ -1,10 +1,11 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Particle } from '@/types/particle';
 import { setupCanvas } from '@/utils/canvasUtils';
 import { createMouseEventHandlers, createTouchEventHandlers } from '@/utils/eventHandlers';
 import { useCanvasAnimation } from '@/hooks/useCanvasAnimation';
 import { useSettings } from '@/contexts/SettingsContext';
-import { getBackgroundStyle, getBackgroundSize } from '@/utils/backgroundUtils';
+import CanvasBackground from './CanvasBackground';
 
 const InteractiveCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -12,10 +13,25 @@ const InteractiveCanvas: React.FC = () => {
   const touchesRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { trackingType, isDarkMode, backgroundType } = useSettings();
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
+
+  // Handle background transitions
+  useEffect(() => {
+    setIsTransitioning(true);
+    
+    // Clear particles during transition for smooth effect
+    particlesRef.current = [];
+    
+    const timer = setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [backgroundType]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -59,31 +75,42 @@ const InteractiveCanvas: React.FC = () => {
     };
   }, [trackingType, backgroundType]); // Re-run when tracking type or background changes
 
-  // Dynamic background styles based on background type and dark mode
-  const backgroundStyle = getBackgroundStyle(backgroundType, isDarkMode);
-  const backgroundSize = getBackgroundSize(backgroundType);
-
   const textColor = isDarkMode ? 'text-white/40' : 'text-gray-600/60';
   const debugTextColor = isDarkMode ? 'text-white/30' : 'text-gray-500/50';
   const signatureColor = isDarkMode ? 'text-white/20' : 'text-gray-400/40';
 
   return (
-    <div className={`relative w-full h-screen overflow-hidden ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`relative w-full h-screen overflow-hidden transition-colors duration-500 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Animated background */}
+      <CanvasBackground backgroundType={backgroundType} isDarkMode={isDarkMode} />
+      
+      {/* Canvas with transition effect */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 cursor-crosshair"
-        style={{ 
-          background: backgroundStyle,
-          backgroundSize: backgroundSize
-        }}
+        className={`absolute inset-0 cursor-crosshair transition-opacity duration-300 ${
+          isTransitioning ? 'opacity-70' : 'opacity-100'
+        }`}
+        style={{ background: 'transparent' }}
       />
       
+      {/* Transition overlay for smooth effects */}
+      {isTransitioning && (
+        <div className={`absolute inset-0 transition-opacity duration-300 ${
+          isDarkMode ? 'bg-gray-900/20' : 'bg-gray-50/20'
+        }`} />
+      )}
+      
       {/* Subtle instructions */}
-      <div className={`absolute top-6 left-6 ${textColor} text-xs font-light z-10`}>
+      <div className={`absolute top-6 left-6 ${textColor} text-xs font-light z-10 transition-opacity duration-300`}>
         <p className="flex items-center gap-2">
           <span className={`w-1 h-1 ${isDarkMode ? 'bg-blue-300/60' : 'bg-blue-500/60'} rounded-full animate-pulse`}></span>
           {isTouch ? 'Touch with multiple fingers' : 'Move and click to create'}
         </p>
+        {backgroundType !== 'none' && (
+          <p className="mt-1 text-xs opacity-60 capitalize">
+            {backgroundType} mode active
+          </p>
+        )}
       </div>
 
       {/* Debug info moved to bottom left */}

@@ -1,4 +1,3 @@
-
 import { Particle } from '@/types/particle';
 
 export const createParticle = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle => {
@@ -63,63 +62,63 @@ const applyBackgroundBehavior = (particle: Particle, backgroundType: string, tra
     case 'cyberpunk':
       return {
         ...particle,
-        vx: particle.vx * 2.0,
-        vy: particle.vy * 2.0,
-        maxLife: 2.5,
-        life: 2.5,
-        size: particle.size * 1.5,
-        energy: particle.energy * 1.5,
+        vx: particle.vx * 1.5, // Reduced from 2.0
+        vy: particle.vy * 1.5,
+        maxLife: 2.0, // Reduced from 2.5
+        life: 2.0,
+        size: particle.size * 1.2, // Reduced from 1.5
+        energy: particle.energy * 1.2,
       };
     
     case 'matrix':
       return {
         ...particle,
-        vy: Math.abs(particle.vy) * 3 + 1, // Strong falling effect
+        vy: Math.abs(particle.vy) * 2.5 + 1, // Reduced from 3
         vx: particle.vx * 0.2,
-        maxLife: 4.0,
-        life: 4.0,
-        size: Math.random() * 2 + 1,
+        maxLife: 3.0, // Reduced from 4.0
+        life: 3.0,
+        size: Math.random() * 1.5 + 1, // Reduced size
       };
     
     case 'nebula':
       return {
         ...particle,
-        vx: particle.vx * 0.6,
-        vy: particle.vy * 0.6,
-        maxLife: 5.0,
-        life: 5.0,
-        size: particle.size * 2.0,
+        vx: particle.vx * 0.5,
+        vy: particle.vy * 0.5,
+        maxLife: 3.5, // Reduced from 5.0
+        life: 3.5,
+        size: particle.size * 1.5, // Reduced from 2.0
       };
     
     case 'aurora':
       return {
         ...particle,
-        vx: particle.vx + Math.sin(Date.now() * 0.001) * 1.0,
-        vy: particle.vy * 0.5,
-        maxLife: 4.0,
-        life: 4.0,
-        size: particle.size * 1.8,
+        vx: particle.vx + Math.sin(Date.now() * 0.001) * 0.8, // Reduced from 1.0
+        vy: particle.vy * 0.4,
+        maxLife: 3.0, // Reduced from 4.0
+        life: 3.0,
+        size: particle.size * 1.4, // Reduced from 1.8
       };
     
     case 'synthwave':
       return {
         ...particle,
-        vx: particle.vx * 2.5,
+        vx: particle.vx * 2.0, // Reduced from 2.5
         vy: particle.vy * 0.3,
-        maxLife: 3.0,
-        life: 3.0,
-        size: particle.size * 1.2,
-        energy: particle.energy * 2.0,
+        maxLife: 2.5, // Reduced from 3.0
+        life: 2.5,
+        size: particle.size * 1.1, // Reduced from 1.2
+        energy: particle.energy * 1.5, // Reduced from 2.0
       };
     
     case 'ocean':
       return {
         ...particle,
-        vx: particle.vx + Math.sin(Date.now() * 0.002) * 0.8,
-        vy: particle.vy + Math.cos(Date.now() * 0.002) * 0.8,
-        maxLife: 3.5,
-        life: 3.5,
-        size: particle.size * 1.6,
+        vx: particle.vx + Math.sin(Date.now() * 0.002) * 0.6, // Reduced from 0.8
+        vy: particle.vy + Math.cos(Date.now() * 0.002) * 0.6,
+        maxLife: 3.0, // Reduced from 3.5
+        life: 3.0,
+        size: particle.size * 1.3, // Reduced from 1.6
       };
     
     default:
@@ -130,12 +129,12 @@ const applyBackgroundBehavior = (particle: Particle, backgroundType: string, tra
 export const createMultipleParticles = (x: number, y: number, count: number, trackingType: string, backgroundType: string = 'none'): Particle[] => {
   const particles: Particle[] = [];
   
-  // Increase particle spread for dramatic backgrounds
-  const spreadMultiplier = backgroundType !== 'none' ? 2.0 : 1.0;
+  // Reduced spread for better performance
+  const spreadMultiplier = backgroundType !== 'none' ? 1.5 : 1.0; // Reduced from 2.0
   
   for (let i = 0; i < count; i++) {
-    const offsetX = x + (Math.random() - 0.5) * 30 * spreadMultiplier;
-    const offsetY = y + (Math.random() - 0.5) * 30 * spreadMultiplier;
+    const offsetX = x + (Math.random() - 0.5) * 20 * spreadMultiplier; // Reduced from 30
+    const offsetY = y + (Math.random() - 0.5) * 20 * spreadMultiplier;
     particles.push(createParticle(offsetX, offsetY, trackingType, backgroundType));
   }
   
