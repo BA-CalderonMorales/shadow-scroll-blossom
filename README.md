@@ -1,73 +1,60 @@
-# Welcome to your Lovable project
+# Shadow Scroll Blossom
 
-## Project info
+An interactive canvas experiment where you can create colorful particle trails and switch between background themes.
 
-**URL**: https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-b38a5b8fc776
+<details>
+<summary><strong>Getting Started</strong></summary>
 
-## How can I edit this code?
+1. Clone the repository.
+2. Run `npm install`.
+3. Launch the dev server with `npm run dev` and open `http://localhost:8080`.
 
-There are several ways of editing your application.
+</details>
 
-**Use Lovable**
+<details>
+<summary><strong>Project Structure</strong></summary>
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-b38a5b8fc776) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository.
-git clone https://github.com/BA-CalderonMorales/shadow-scroll-blossom.git
-
-# Step 2: Navigate to the project directory.
-cd shadow-scroll-blossom
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+  ```
+src/
+  components/        React components for the canvas and UI
+  contexts/          global settings state
+  data/              static options for menus
+  hooks/             reusable hooks
+  pages/             route components
+  utils/             canvas and particle helpers
+  types/             TypeScript interfaces
 ```
 
-**Edit a file directly in GitHub**
+</details>
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+<details>
+<summary><strong>Key Features</strong></summary>
 
-**Use GitHub Codespaces**
+- Mouse and touch tracking on the canvas
+- Multiple particle styles and background themes
+- Dark mode toggle with persistence
+- Settings stored in localStorage
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+</details>
 
-## What technologies are used for this project?
+<details>
+<summary><strong>Editing the Code</strong></summary>
 
-This project is built with:
+Edit directly on [Lovable](https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-b38a5b8fc776) or work locally using your favorite editor. Make sure Node.js is installed via [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+</details>
 
-## How can I deploy this project?
+<details>
+<summary><strong>Technology Overview</strong></summary>
 
-Simply open [Lovable](https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-b38a5b8fc776) and click on Share -> Publish.
+This project uses Vite, React, TypeScript, Tailwind CSS, and shadcn-ui.
 
-## Can I connect a custom domain to my Lovable project?
+</details>
 
-Yes, you can!
+<details>
+<summary><strong>Deployment</strong></summary>
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Use the Share → Publish option on Lovable to deploy your site. Custom domains can be configured in Project → Settings → Domains.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+</details>
+
