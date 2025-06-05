@@ -32,10 +32,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (stored !== null) {
       return stored === 'true';
     }
-    return (
-      document.documentElement.classList.contains('dark') ||
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   const [backgroundType, setBackgroundTypeState] = useState(() => {
@@ -81,7 +78,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, []);
+  }, [isDarkMode]);
 
   return (
     <SettingsContext.Provider value={{ 
