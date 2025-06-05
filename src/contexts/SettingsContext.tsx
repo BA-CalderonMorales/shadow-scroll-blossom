@@ -28,8 +28,14 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   });
   
   const [isDarkMode, setIsDarkModeState] = useState(() => {
-    return document.documentElement.classList.contains('dark') || 
-           window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const stored = localStorage.getItem('darkMode');
+    if (stored !== null) {
+      return stored === 'true';
+    }
+    return (
+      document.documentElement.classList.contains('dark') ||
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    );
   });
 
   const [backgroundType, setBackgroundTypeState] = useState(() => {
