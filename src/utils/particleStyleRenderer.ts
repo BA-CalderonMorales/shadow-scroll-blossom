@@ -318,13 +318,13 @@ const drawDigitalParticle = (ctx: CanvasRenderingContext2D, particle: Particle, 
   for (let x = -gridSize; x <= gridSize; x++) {
     for (let y = -gridSize; y <= gridSize; y++) {
       if (Math.random() < 0.7) {
-        const pixelX = x * pixelSize;
-        const pixelY = y * pixelSize;
-        const distance = Math.sqrt(pixelX * pixelX + pixelY * pixelY);
+        const pixelXPos = x * pixelSize;
+        const pixelYPos = y * pixelSize;
+        const distance = Math.sqrt(pixelXPos * pixelXPos + pixelYPos * pixelYPos);
         
         if (distance < particle.size * 3) {
           ctx.globalAlpha = alpha * (1 - distance / (particle.size * 3));
-          ctx.fillRect(pixelX - pixelSize/2, pixelY - pixelSize/2, pixelSize, pixelSize);
+          ctx.fillRect(pixelXPos - pixelSize/2, pixelYPos - pixelSize/2, pixelSize, pixelSize);
         }
       }
     }
