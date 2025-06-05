@@ -14,7 +14,7 @@ An interactive canvas experiment where you can create colorful particle trails a
 <details>
 <summary><strong>Project Structure</strong></summary>
 
-```
+  ```
 src/
   components/        React components for the canvas and UI
   contexts/          global settings state
