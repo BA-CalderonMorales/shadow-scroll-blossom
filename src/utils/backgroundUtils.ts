@@ -79,19 +79,15 @@ export const getBackgroundStyle = (backgroundType: string, isDarkMode: boolean):
           linear-gradient(180deg, #fdf4ff 0%, #f3e8ff 100%)
         `;
 
-    case 'ocean':
+    case 'fluid':
       return isDarkMode
         ? `
-          radial-gradient(ellipse at 30% 20%, rgba(0, 191, 255, 0.5) 0%, rgba(30, 144, 255, 0.3) 40%, transparent 80%),
-          radial-gradient(ellipse at 70% 80%, rgba(30, 144, 255, 0.4) 0%, rgba(0, 100, 200, 0.2) 50%, transparent 85%),
-          radial-gradient(ellipse at 50% 50%, rgba(0, 100, 200, 0.3) 0%, rgba(25, 25, 112, 0.15) 60%, transparent 90%),
-          radial-gradient(ellipse at 20% 60%, rgba(72, 209, 204, 0.25) 0%, transparent 70%),
-          linear-gradient(180deg, #001122 0%, #002244 25%, #003366 50%, #002255 75%, #001133 100%)
+          radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(107, 114, 128, 0.6) 0%, rgba(17, 24, 39, 0.8) 70%),
+          linear-gradient(180deg, #1f2937 0%, #111827 100%)
         `
         : `
-          radial-gradient(ellipse at 30% 20%, rgba(0, 191, 255, 0.15) 0%, transparent 70%),
-          radial-gradient(ellipse at 70% 80%, rgba(30, 144, 255, 0.12) 0%, transparent 70%),
-          linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)
+          radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(209, 213, 219, 0.6) 0%, rgba(243, 244, 246, 0.8) 70%),
+          linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%)
         `;
 
     case 'none':

@@ -2,7 +2,7 @@
 import { Particle } from '@/types/particle';
 
 export const createParticle = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle => {
-  const color = getBackgroundAwareColor(backgroundType);
+  const color = getTrackingAwareColor(trackingType) || getBackgroundAwareColor(backgroundType);
   const baseParticle = {
     x,
     y,
@@ -49,15 +49,30 @@ const getBackgroundAwareColor = (backgroundType: string): string => {
       const synthwaveColors = ['#ff1493', '#00ffff', '#ff4500', '#ff69b4', '#ff0080', '#00ff80'];
       return synthwaveColors[Math.floor(Math.random() * synthwaveColors.length)];
     
-    case 'ocean':
-      const oceanColors = ['#00bfff', '#1e90ff', '#0066cc', '#4169e1', '#48d1cc', '#87ceeb'];
-      return oceanColors[Math.floor(Math.random() * oceanColors.length)];
     
     default:
       // Convert HSL to hex format to avoid color parsing issues
       const hue = Math.random() * 360;
       return hslToHex(hue, 70, 60);
   }
+};
+
+const getTrackingAwareColor = (trackingType: string): string | undefined => {
+  const colorsMap: Record<string, string[]> = {
+    subtle: ['#6ee7b7', '#34d399'],
+    comet: ['#93c5fd', '#3b82f6'],
+    fireworks: ['#f9a8d4', '#ec4899'],
+    lightning: ['#fcd34d', '#facc15'],
+    galaxy: ['#c084fc', '#a855f7'],
+    neon: ['#f0abfc', '#d946ef'],
+    watercolor: ['#7dd3fc', '#38bdf8'],
+    geometric: ['#fdba74', '#fb923c'],
+  };
+  const palette = colorsMap[trackingType];
+  if (palette) {
+    return palette[Math.floor(Math.random() * palette.length)];
+  }
+  return undefined;
 };
 
 // Helper function to convert HSL to hex
@@ -126,15 +141,6 @@ const applyBackgroundBehavior = (particle: Particle, backgroundType: string, tra
         energy: particle.energy * 1.5, // Reduced from 2.0
       };
     
-    case 'ocean':
-      return {
-        ...particle,
-        vx: particle.vx + Math.sin(Date.now() * 0.002) * 0.6, // Reduced from 0.8
-        vy: particle.vy + Math.cos(Date.now() * 0.002) * 0.6,
-        maxLife: 3.0, // Reduced from 3.5
-        life: 3.0,
-        size: particle.size * 1.3, // Reduced from 1.6
-      };
     
     default:
       return particle;

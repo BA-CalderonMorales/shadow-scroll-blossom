@@ -64,6 +64,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setBackgroundTypeState(type);
     localStorage.setItem('backgroundType', type);
     console.log('Background type changed to:', type);
+    if (type === 'fluid') {
+      setTrackingTypeState('none');
+      localStorage.setItem('trackingType', 'none');
+    }
   };
 
   const setParticleStyle = (style: string) => {
