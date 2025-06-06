@@ -36,9 +36,6 @@ const drawBackgroundSpecificEffects = (ctx: CanvasRenderingContext2D, particle: 
       drawSynthwaveParticle(ctx, particle, alpha);
       break;
     
-    case 'ocean':
-      drawOceanParticle(ctx, particle, alpha);
-      break;
     
     default:
       drawDefaultParticle(ctx, particle, alpha, isDarkMode);
@@ -222,46 +219,6 @@ const drawSynthwaveParticle = (ctx: CanvasRenderingContext2D, particle: Particle
   ctx.restore();
 };
 
-const drawOceanParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number): void => {
-  ctx.save();
-  ctx.globalAlpha = alpha * 0.9;
-  
-  // Bubble-like effect with wave distortion
-  const time = Date.now() * 0.002;
-  const waveX = Math.sin(time + particle.y * 0.01) * 2;
-  const waveY = Math.cos(time * 0.8 + particle.x * 0.01) * 1.5;
-  
-  // Bubble with refraction
-  const gradient = ctx.createRadialGradient(
-    particle.x + waveX - particle.size * 0.3,
-    particle.y + waveY - particle.size * 0.3,
-    0,
-    particle.x + waveX,
-    particle.y + waveY,
-    particle.size * 3
-  );
-  gradient.addColorStop(0, '#ffffff44');
-  gradient.addColorStop(0.3, particle.color + 'AA');
-  gradient.addColorStop(0.7, particle.color + '44');
-  gradient.addColorStop(1, 'transparent');
-  
-  ctx.fillStyle = gradient;
-  ctx.beginPath();
-  ctx.arc(particle.x + waveX, particle.y + waveY, particle.size * 3, 0, Math.PI * 2);
-  ctx.fill();
-  
-  // Highlight on bubble
-  ctx.fillStyle = '#ffffff66';
-  ctx.beginPath();
-  ctx.arc(
-    particle.x + waveX - particle.size * 0.5,
-    particle.y + waveY - particle.size * 0.5,
-    particle.size * 0.7, 0, Math.PI * 2
-  );
-  ctx.fill();
-  
-  ctx.restore();
-};
 
 const drawDefaultParticle = (ctx: CanvasRenderingContext2D, particle: Particle, alpha: number, isDarkMode: boolean): void => {
   ctx.save();

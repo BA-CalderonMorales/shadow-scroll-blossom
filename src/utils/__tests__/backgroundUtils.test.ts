@@ -22,4 +22,10 @@ describe('getBackgroundStyle', () => {
     const result = getBackgroundStyle('none', false);
     expect(result).toBe('radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%)');
   });
+
+  test('returns fluid style uses css vars', () => {
+    const result = getBackgroundStyle('fluid', true);
+    expect(result).toContain('var(--x');
+    expect(result).toContain('var(--y');
+  });
 });
