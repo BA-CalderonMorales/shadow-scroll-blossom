@@ -58,3 +58,11 @@ Use the Share → Publish option on Lovable to deploy your site. Custom domains 
 
 </details>
 
+
+<details>
+<summary><strong>Previewing Pull Requests</strong></summary>
+
+Every pull request triggers a workflow that builds the site and publishes a free GitHub Pages preview. A link to the preview is posted as a comment on the PR so you can test changes before merging.
+
+</details>
+
