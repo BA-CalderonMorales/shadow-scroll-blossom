@@ -56,6 +56,10 @@ This project uses Vite, React, TypeScript, Tailwind CSS, and shadcn-ui.
 
 Use the Share → Publish option on Lovable to deploy your site. Custom domains can be configured in Project → Settings → Domains.
 
+Pushes to `main` automatically deploy to **GitHub Pages** via GitHub Actions. Enable Pages in the repository settings with "GitHub Actions" as the source. Once enabled, your site will be live at [`https://ba-calderonmorales.github.io/shadow-scroll-blossom/`](https://ba-calderonmorales.github.io/shadow-scroll-blossom/).
+
+GitHub Pages must be enabled for the pull request previews to work correctly.
+
 </details>
 
 
