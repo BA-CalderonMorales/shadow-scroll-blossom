@@ -80,7 +80,8 @@ const InteractiveCanvas: React.FC = () => {
   const signatureColor = isDarkMode ? 'text-white/20' : 'text-gray-400/40';
 
   return (
-    <div className={`relative w-full h-screen overflow-hidden transition-colors duration-500 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`relative w-full min-h-screen overflow-hidden transition-colors duration-500 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}
+         style={{ minHeight: '100dvh' }}>
       {/* Animated background */}
       <CanvasBackground backgroundType={backgroundType} isDarkMode={isDarkMode} />
       
