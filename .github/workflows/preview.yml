@@ -1,3 +1,4 @@
+---
 name: Preview
 
 on:
@@ -56,4 +57,3 @@ jobs:
               repo: context.repo.repo,
               body: `Live preview: ${{ steps.deployment.outputs.page_url }}`
             })
-

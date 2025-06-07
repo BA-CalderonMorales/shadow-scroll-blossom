@@ -1,20 +1,30 @@
 # Shadow Scroll Blossom
 
-An interactive canvas experiment where you can create colorful particle trails and switch between background themes.
+This project is my personal playground for generative art. It renders colorful particle trails that react to your mouse or touch input and lets you switch between multiple background themes. The repository also serves as a template for anyone wanting to build a similar interactive canvas site.
+
+<details>
+<summary><strong>Using This Repository as a Template</strong></summary>
+
+1. Fork or clone the repo.
+2. Update the project name in `package.json` and adjust this README with your own description.
+3. Modify the canvas logic in `src` to experiment with your own particle effects.
+4. Push your changes to `main` to deploy automatically with GitHub Pages.
+
+</details>
 
 <details>
 <summary><strong>Getting Started</strong></summary>
 
-1. Clone the repository.
-2. Run `npm install`.
-3. Launch the dev server with `npm run dev` and open `http://localhost:8080`.
+1. Run `npm install`.
+2. Launch the dev server with `npm run dev` and open `http://localhost:8080`.
+3. Build for production with `npm run build`.
 
 </details>
 
 <details>
 <summary><strong>Project Structure</strong></summary>
 
-  ```
+```
 src/
   components/        React components for the canvas and UI
   contexts/          global settings state
@@ -30,7 +40,7 @@ src/
 <details>
 <summary><strong>Key Features</strong></summary>
 
-- Mouse and touch tracking on the canvas
+- Mouse and touch interaction on the canvas
 - Multiple particle styles and background themes
 - Dark mode toggle with persistence
 - Settings stored in localStorage
@@ -47,21 +57,18 @@ Edit directly on [Lovable](https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-
 <details>
 <summary><strong>Technology Overview</strong></summary>
 
-This project uses Vite, React, TypeScript, Tailwind CSS, and shadcn-ui.
+This project uses Vite, React, TypeScript, Tailwind CSS and shadcn-ui.
 
 </details>
 
 <details>
 <summary><strong>Deployment</strong></summary>
 
-Use the Share → Publish option on Lovable to deploy your site. Custom domains can be configured in Project → Settings → Domains.
-
 Pushes to `main` automatically deploy to **GitHub Pages** via GitHub Actions. Enable Pages in the repository settings with "GitHub Actions" as the source. Once enabled, your site will be live at [`https://ba-calderonmorales.github.io/shadow-scroll-blossom/`](https://ba-calderonmorales.github.io/shadow-scroll-blossom/).
 
 GitHub Pages must be enabled for the pull request previews to work correctly.
 
 </details>
-
 
 <details>
 <summary><strong>Previewing Pull Requests</strong></summary>
