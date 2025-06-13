@@ -6,25 +6,30 @@ import { SettingsPanel } from './settings/SettingsPanel';
 import { DarkModeToggle } from './settings/DarkModeToggle';
 import { CollapsibleSection } from './settings/CollapsibleSection';
 import { trackingOptions, backgroundOptions, particleStyleOptions } from '@/data/settingsOptions';
+import { audioOptions } from '@/data/audioOptions';
 
 export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [isBackgroundOpen, setIsBackgroundOpen] = useState(false);
   const [isParticleStyleOpen, setIsParticleStyleOpen] = useState(false);
+  const [isAudioOpen, setIsAudioOpen] = useState(false);
   
-  const { 
-    trackingType, 
-    setTrackingType, 
+  const {
+    trackingType,
+    setTrackingType,
     backgroundType,
     setBackgroundType,
     particleStyle,
-    setParticleStyle
+    setParticleStyle,
+    audioVibe,
+    setAudioVibe
   } = useSettings();
 
   const isAnimationActive = trackingType !== 'none';
   const isBackgroundActive = backgroundType !== 'none';
   const isParticleStyleActive = particleStyle !== 'default';
+  const isAudioActive = audioVibe !== 'none';
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -62,6 +67,17 @@ export const SettingsMenu = () => {
             value={particleStyle}
             onValueChange={setParticleStyle}
             scrollHeight="h-40"
+          />
+
+          <CollapsibleSection
+            title="Audio Vibe"
+            icon={Sparkles}
+            isOpen={isAudioOpen}
+            onOpenChange={setIsAudioOpen}
+            isActive={isAudioActive}
+            options={audioOptions}
+            value={audioVibe}
+            onValueChange={setAudioVibe}
           />
 
           <CollapsibleSection

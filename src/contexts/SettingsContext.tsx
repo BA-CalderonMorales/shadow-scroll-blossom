@@ -10,6 +10,8 @@ interface SettingsContextType {
   setBackgroundType: (type: string) => void;
   particleStyle: string;
   setParticleStyle: (style: string) => void;
+  audioVibe: string;
+  setAudioVibe: (vibe: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -41,6 +43,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const [particleStyle, setParticleStyleState] = useState(() => {
     return localStorage.getItem('particleStyle') || 'default';
+  });
+
+  const [audioVibe, setAudioVibeState] = useState(() => {
+    return localStorage.getItem('audioVibe') || 'none';
   });
 
   const setTrackingType = (type: string) => {
@@ -76,6 +82,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     console.log('Particle style changed to:', style);
   };
 
+  const setAudioVibe = (vibe: string) => {
+    setAudioVibeState(vibe);
+    localStorage.setItem('audioVibe', vibe);
+    console.log('Audio vibe changed to:', vibe);
+  };
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -93,7 +105,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       backgroundType,
       setBackgroundType,
       particleStyle,
-      setParticleStyle
+      setParticleStyle,
+      audioVibe,
+      setAudioVibe
     }}>
       {children}
     </SettingsContext.Provider>

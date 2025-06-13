@@ -18,6 +18,7 @@ This project is my personal playground for generative art. It renders colorful p
 1. Run `npm install`.
 2. Launch the dev server with `npm run dev` and open `http://localhost:8080`.
 3. Build for production with `npm run build`.
+4. (Optional) Generate the demo audio tracks with `npm run generate:audio`.
 
 </details>
 
@@ -44,6 +45,7 @@ src/
 - Multiple particle styles and background themes
 - Dark mode toggle with persistence
 - Settings stored in localStorage
+- Optional background music generated with SuperCollider
 
 </details>
 
@@ -77,3 +79,6 @@ Every pull request triggers a workflow that builds the site and publishes a free
 
 </details>
 
+
+### Generating Audio
+Run `npm run generate:audio` to create example mp3 files using SuperCollider. This requires SuperCollider and ffmpeg installed on your system.

@@ -4,6 +4,7 @@ import { Particle } from '@/types/particle';
 import { setupCanvas } from '@/utils/canvasUtils';
 import { createMouseEventHandlers, createTouchEventHandlers } from '@/utils/eventHandlers';
 import { useCanvasAnimation } from '@/hooks/useCanvasAnimation';
+import { useAudio } from '@/hooks/useAudio';
 import { useSettings } from '@/contexts/SettingsContext';
 import CanvasBackground from './CanvasBackground';
 
@@ -15,6 +16,7 @@ const InteractiveCanvas: React.FC = () => {
   const [isTouch, setIsTouch] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { trackingType, isDarkMode, backgroundType, particleStyle } = useSettings();
+  const { registerInteraction } = useAudio();
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
@@ -45,16 +47,37 @@ const InteractiveCanvas: React.FC = () => {
     window.addEventListener('resize', resizeCanvas);
 
     // Create event handlers with current settings
-    const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef, trackingType, backgroundType);
-    const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch, trackingType, backgroundType);
+    const mouseHandlers = createMouseEventHandlers(
+      canvas,
+      particlesRef,
+      mouseRef,
+      trackingType,
+      backgroundType
+    );
+    const touchHandlers = createTouchEventHandlers(
+      canvas,
+      particlesRef,
+      touchesRef,
+      setIsTouch,
+      trackingType,
+      backgroundType
+    );
 
     // Add event listeners
     canvas.addEventListener('mousemove', mouseHandlers.handleMouseMove);
-    canvas.addEventListener('mousedown', mouseHandlers.handleMouseDown);
+    const onMouseDown = (e: MouseEvent) => {
+      registerInteraction();
+      mouseHandlers.handleMouseDown(e);
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      registerInteraction();
+      touchHandlers.handleTouchStart(e);
+    };
+    canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mouseup', mouseHandlers.handleMouseUp);
     canvas.addEventListener('mouseleave', mouseHandlers.handleMouseUp);
-    
-    canvas.addEventListener('touchstart', touchHandlers.handleTouchStart, { passive: false });
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', touchHandlers.handleTouchMove, { passive: false });
     canvas.addEventListener('touchend', touchHandlers.handleTouchEnd, { passive: false });
 
@@ -64,10 +87,10 @@ const InteractiveCanvas: React.FC = () => {
       console.log('Cleaning up InteractiveCanvas');
       window.removeEventListener('resize', resizeCanvas);
       canvas.removeEventListener('mousemove', mouseHandlers.handleMouseMove);
-      canvas.removeEventListener('mousedown', mouseHandlers.handleMouseDown);
+      canvas.removeEventListener('mousedown', onMouseDown);
       canvas.removeEventListener('mouseup', mouseHandlers.handleMouseUp);
       canvas.removeEventListener('mouseleave', mouseHandlers.handleMouseUp);
-      canvas.removeEventListener('touchstart', touchHandlers.handleTouchStart);
+      canvas.removeEventListener('touchstart', onTouchStart);
       canvas.removeEventListener('touchmove', touchHandlers.handleTouchMove);
       canvas.removeEventListener('touchend', touchHandlers.handleTouchEnd);
       
