@@ -10,6 +10,8 @@ interface SettingsContextType {
   setBackgroundType: (type: string) => void;
   particleStyle: string;
   setParticleStyle: (style: string) => void;
+  soundTrack: string;
+  setSoundTrack: (track: string) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -41,6 +43,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const [particleStyle, setParticleStyleState] = useState(() => {
     return localStorage.getItem('particleStyle') || 'default';
+  });
+
+  const [soundTrack, setSoundTrackState] = useState(() => {
+    return localStorage.getItem('soundTrack') || 'none';
   });
 
   const setTrackingType = (type: string) => {
@@ -76,6 +82,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     console.log('Particle style changed to:', style);
   };
 
+  const setSoundTrack = (track: string) => {
+    setSoundTrackState(track);
+    localStorage.setItem('soundTrack', track);
+    console.log('Sound track changed to:', track);
+  };
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -85,15 +97,17 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [isDarkMode]);
 
   return (
-    <SettingsContext.Provider value={{ 
-      trackingType, 
-      setTrackingType, 
-      isDarkMode, 
+    <SettingsContext.Provider value={{
+      trackingType,
+      setTrackingType,
+      isDarkMode,
       setIsDarkMode,
       backgroundType,
       setBackgroundType,
       particleStyle,
-      setParticleStyle
+      setParticleStyle,
+      soundTrack,
+      setSoundTrack
     }}>
       {children}
     </SettingsContext.Provider>

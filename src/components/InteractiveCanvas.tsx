@@ -14,10 +14,29 @@ const InteractiveCanvas: React.FC = () => {
   const mouseRef = useRef({ x: 0, y: 0, isPressed: false });
   const [isTouch, setIsTouch] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const { trackingType, isDarkMode, backgroundType, particleStyle } = useSettings();
+  const { trackingType, isDarkMode, backgroundType, particleStyle, soundTrack } = useSettings();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Use the custom animation hook
   useCanvasAnimation(canvasRef, particlesRef);
+
+  // Manage audio track
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    if (soundTrack !== 'none') {
+      const audio = new Audio(`/audio/${soundTrack}.mp3`);
+      audio.loop = true;
+      audio.onerror = () => {
+        console.warn(`Audio file for ${soundTrack} not found. Did you generate it?`);
+      };
+      audioRef.current = audio;
+    } else {
+      audioRef.current = null;
+    }
+  }, [soundTrack]);
 
   // Handle background and particle style transitions
   useEffect(() => {
@@ -48,15 +67,46 @@ const InteractiveCanvas: React.FC = () => {
     const mouseHandlers = createMouseEventHandlers(canvas, particlesRef, mouseRef, trackingType, backgroundType);
     const touchHandlers = createTouchEventHandlers(canvas, particlesRef, touchesRef, setIsTouch, trackingType, backgroundType);
 
+    const startSound = () => {
+      audioRef.current?.play();
+    };
+    const stopSound = () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+
+    const onMouseDown = (e: MouseEvent) => {
+      mouseHandlers.handleMouseDown(e);
+      startSound();
+    };
+    const onMouseUp = (e: MouseEvent) => {
+      mouseHandlers.handleMouseUp(e);
+      stopSound();
+    };
+    const onMouseLeave = (e: MouseEvent) => {
+      mouseHandlers.handleMouseUp(e);
+      stopSound();
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      startSound();
+      touchHandlers.handleTouchStart(e);
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      stopSound();
+      touchHandlers.handleTouchEnd(e);
+    };
+
     // Add event listeners
     canvas.addEventListener('mousemove', mouseHandlers.handleMouseMove);
-    canvas.addEventListener('mousedown', mouseHandlers.handleMouseDown);
-    canvas.addEventListener('mouseup', mouseHandlers.handleMouseUp);
-    canvas.addEventListener('mouseleave', mouseHandlers.handleMouseUp);
-    
-    canvas.addEventListener('touchstart', touchHandlers.handleTouchStart, { passive: false });
+    canvas.addEventListener('mousedown', onMouseDown);
+    canvas.addEventListener('mouseup', onMouseUp);
+    canvas.addEventListener('mouseleave', onMouseLeave);
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     canvas.addEventListener('touchmove', touchHandlers.handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', touchHandlers.handleTouchEnd, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd, { passive: false });
 
     console.log('Event listeners added');
 
@@ -64,16 +114,16 @@ const InteractiveCanvas: React.FC = () => {
       console.log('Cleaning up InteractiveCanvas');
       window.removeEventListener('resize', resizeCanvas);
       canvas.removeEventListener('mousemove', mouseHandlers.handleMouseMove);
-      canvas.removeEventListener('mousedown', mouseHandlers.handleMouseDown);
-      canvas.removeEventListener('mouseup', mouseHandlers.handleMouseUp);
-      canvas.removeEventListener('mouseleave', mouseHandlers.handleMouseUp);
-      canvas.removeEventListener('touchstart', touchHandlers.handleTouchStart);
+      canvas.removeEventListener('mousedown', onMouseDown);
+      canvas.removeEventListener('mouseup', onMouseUp);
+      canvas.removeEventListener('mouseleave', onMouseLeave);
+      canvas.removeEventListener('touchstart', onTouchStart);
       canvas.removeEventListener('touchmove', touchHandlers.handleTouchMove);
-      canvas.removeEventListener('touchend', touchHandlers.handleTouchEnd);
+      canvas.removeEventListener('touchend', onTouchEnd);
       
       touchesRef.current.clear();
     };
-  }, [trackingType, backgroundType, particleStyle]); // Re-run when any setting changes
+  }, [trackingType, backgroundType, particleStyle, soundTrack]); // Re-run when any setting changes
 
   const textColor = isDarkMode ? 'text-white/40' : 'text-gray-600/60';
   const debugTextColor = isDarkMode ? 'text-white/30' : 'text-gray-500/50';

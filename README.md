@@ -18,6 +18,8 @@ This project is my personal playground for generative art. It renders colorful p
 1. Run `npm install`.
 2. Launch the dev server with `npm run dev` and open `http://localhost:8080`.
 3. Build for production with `npm run build`.
+4. Optionally run the SuperCollider script in `audio/generate_audio.scd` to create custom tracks.
+5. Place the generated `ambient.mp3`, `upbeat.mp3`, and `chill.mp3` files in `public/audio`.
 
 </details>
 
@@ -44,6 +46,7 @@ src/
 - Multiple particle styles and background themes
 - Dark mode toggle with persistence
 - Settings stored in localStorage
+- Optional audio tracks generated with SuperCollider (files not included)
 
 </details>
 

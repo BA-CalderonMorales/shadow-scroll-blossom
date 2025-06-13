@@ -33,3 +33,10 @@ export const particleStyleOptions = [
   { value: 'flame', label: 'Fire Tongues', description: 'Flickering flame-like shapes' },
   { value: 'electric', label: 'Lightning Bolts', description: 'Jagged electric arcs' }
 ];
+
+export const soundOptions = [
+  { value: 'none', label: 'No Sound', description: 'Silence' },
+  { value: 'ambient', label: 'Ambient Pulse', description: 'Soft 440Hz tone' },
+  { value: 'upbeat', label: 'Upbeat Tone', description: 'Bright 660Hz tone' },
+  { value: 'chill', label: 'Chill Vibe', description: 'Calm 320Hz tone' }
+];

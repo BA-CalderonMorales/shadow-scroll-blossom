@@ -1,17 +1,18 @@
 
 import { useState } from 'react';
-import { Settings, MousePointer, Image, Sparkles } from 'lucide-react';
+import { Settings, MousePointer, Image, Sparkles, Music } from 'lucide-react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { SettingsPanel } from './settings/SettingsPanel';
 import { DarkModeToggle } from './settings/DarkModeToggle';
 import { CollapsibleSection } from './settings/CollapsibleSection';
-import { trackingOptions, backgroundOptions, particleStyleOptions } from '@/data/settingsOptions';
+import { trackingOptions, backgroundOptions, particleStyleOptions, soundOptions } from '@/data/settingsOptions';
 
 export const SettingsMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [isBackgroundOpen, setIsBackgroundOpen] = useState(false);
   const [isParticleStyleOpen, setIsParticleStyleOpen] = useState(false);
+  const [isSoundOpen, setIsSoundOpen] = useState(false);
   
   const { 
     trackingType, 
@@ -19,12 +20,15 @@ export const SettingsMenu = () => {
     backgroundType,
     setBackgroundType,
     particleStyle,
-    setParticleStyle
+    setParticleStyle,
+    soundTrack,
+    setSoundTrack
   } = useSettings();
 
   const isAnimationActive = trackingType !== 'none';
   const isBackgroundActive = backgroundType !== 'none';
   const isParticleStyleActive = particleStyle !== 'default';
+  const isSoundActive = soundTrack !== 'none';
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -73,6 +77,17 @@ export const SettingsMenu = () => {
             options={trackingOptions}
             value={trackingType}
             onValueChange={setTrackingType}
+          />
+
+          <CollapsibleSection
+            title="Sound Track"
+            icon={Music}
+            isOpen={isSoundOpen}
+            onOpenChange={setIsSoundOpen}
+            isActive={isSoundActive}
+            options={soundOptions}
+            value={soundTrack}
+            onValueChange={setSoundTrack}
           />
         </SettingsPanel>
       )}
