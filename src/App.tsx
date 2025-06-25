@@ -9,28 +9,16 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Dynamically determine base URL based on environment
-const getBasename = () => {
-  // For GitHub Pages deployment
-  if (window.location.hostname === 'ba-calderonmorales.github.io') {
-    return '/shadow-scroll-blossom';
-  }
-  
-  // For Lovable deployments (.lovable.app), use root path
-  if (window.location.hostname.includes('.lovable.app')) {
-    return '/';
-  }
-  
-  // For other deployments, use the Vite base URL
-  return import.meta.env.BASE_URL;
-};
+// Use the Vite `base` value for BrowserRouter's basename. Vite injects the
+// correct base at build time depending on the deployment target.
+const basename = import.meta.env.BASE_URL;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename={getBasename()}>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -26,9 +26,9 @@ jobs:
           node-version: 20
           cache: 'npm'
       - run: npm ci
-      - run: GITHUB_PAGES=true npm run build
+      - run: VITE_DEPLOY_TARGET=github npm run build
         env:
-          GITHUB_PAGES: true
+          VITE_DEPLOY_TARGET: github
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
