@@ -16,7 +16,12 @@ const getBasename = () => {
     return '/shadow-scroll-blossom';
   }
   
-  // For Lovable or other deployments, use the Vite base URL
+  // For Lovable deployments (.lovable.app), use root path
+  if (window.location.hostname.includes('.lovable.app')) {
+    return '/';
+  }
+  
+  // For other deployments, use the Vite base URL
   return import.meta.env.BASE_URL;
 };
 
