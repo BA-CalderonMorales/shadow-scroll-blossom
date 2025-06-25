@@ -1,3 +1,4 @@
+
 ---
 name: Preview
 
@@ -26,7 +27,9 @@ jobs:
           node-version: 20
           cache: 'npm'
       - run: npm ci
-      - run: npm run build
+      - run: GITHUB_PAGES=true npm run build
+        env:
+          GITHUB_PAGES: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
