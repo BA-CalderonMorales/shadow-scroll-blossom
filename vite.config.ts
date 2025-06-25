@@ -6,15 +6,12 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // Determine base URL based on deployment target
-  let base = '/';
-  
-  if (mode === 'production') {
-    // Check if we're building for GitHub Pages
-    // This can be determined by environment variable or other means
-    const isGitHubPages = process.env.GITHUB_PAGES === 'true' || process.env.CI === 'true';
-    base = isGitHubPages ? '/shadow-scroll-blossom/' : '/';
-  }
+  // Set the base path depending on the deployment target. When deploying to
+  // GitHub Pages we use the repository name as the base. All other environments
+  // (local dev and Lovable previews) should use the root path.
+  const base = process.env.VITE_DEPLOY_TARGET === 'github'
+    ? '/shadow-scroll-blossom/'
+    : '/';
 
   return {
     base,
