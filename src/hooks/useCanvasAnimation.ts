@@ -4,6 +4,7 @@ import { Particle } from '@/types/particle';
 import { updateParticle, drawParticle, isParticleAlive } from '@/utils/particleUtils';
 import { clearCanvas } from '@/utils/canvasUtils';
 import { useSettings } from '@/contexts/SettingsContext';
+import { logDev } from '@/utils/logDev';
 
 export const useCanvasAnimation = (
   canvasRef: React.RefObject<HTMLCanvasElement>,
@@ -38,7 +39,7 @@ export const useCanvasAnimation = (
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    console.log('Starting animation with background:', backgroundType, 'particle style:', particleStyle);
+    logDev('Starting animation with background:', backgroundType, 'particle style:', particleStyle);
     animate();
 
     return () => {

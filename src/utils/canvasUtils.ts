@@ -1,8 +1,10 @@
 
+import { logDev } from './logDev';
+
 export const setupCanvas = (canvas: HTMLCanvasElement): void => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  console.log('Canvas resized', { width: canvas.width, height: canvas.height });
+  logDev('Canvas resized', { width: canvas.width, height: canvas.height });
 };
 
 export const clearCanvas = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, isDarkMode: boolean = true): void => {

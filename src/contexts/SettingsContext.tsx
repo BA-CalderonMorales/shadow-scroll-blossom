@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { logDev } from '@/utils/logDev';
 
 interface SettingsContextType {
   trackingType: string;
@@ -46,7 +47,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setTrackingType = (type: string) => {
     setTrackingTypeState(type);
     localStorage.setItem('trackingType', type);
-    console.log('Tracking type changed to:', type);
+    logDev('Tracking type changed to:', type);
   };
 
   const setIsDarkMode = (dark: boolean) => {
@@ -63,7 +64,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setBackgroundType = (type: string) => {
     setBackgroundTypeState(type);
     localStorage.setItem('backgroundType', type);
-    console.log('Background type changed to:', type);
+    logDev('Background type changed to:', type);
     if (type === 'fluid') {
       setTrackingTypeState('none');
       localStorage.setItem('trackingType', 'none');
@@ -73,7 +74,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setParticleStyle = (style: string) => {
     setParticleStyleState(style);
     localStorage.setItem('particleStyle', style);
-    console.log('Particle style changed to:', style);
+    logDev('Particle style changed to:', style);
   };
 
   useEffect(() => {
