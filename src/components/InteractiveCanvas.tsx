@@ -5,6 +5,7 @@ import { setupCanvas } from '@/utils/canvasUtils';
 import { createMouseEventHandlers, createTouchEventHandlers } from '@/utils/eventHandlers';
 import { useCanvasAnimation } from '@/hooks/useCanvasAnimation';
 import { useSettings } from '@/contexts/SettingsContext';
+import { logDev } from '@/utils/logDev';
 import CanvasBackground from './CanvasBackground';
 
 const InteractiveCanvas: React.FC = () => {
@@ -37,7 +38,7 @@ const InteractiveCanvas: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    console.log('Canvas initialized with tracking type:', trackingType, 'background:', backgroundType, 'particle style:', particleStyle);
+    logDev('Canvas initialized with tracking type:', trackingType, 'background:', backgroundType, 'particle style:', particleStyle);
     setupCanvas(canvas);
 
     // Set up resize handler
@@ -58,10 +59,10 @@ const InteractiveCanvas: React.FC = () => {
     canvas.addEventListener('touchmove', touchHandlers.handleTouchMove, { passive: false });
     canvas.addEventListener('touchend', touchHandlers.handleTouchEnd, { passive: false });
 
-    console.log('Event listeners added');
+    logDev('Event listeners added');
 
     return () => {
-      console.log('Cleaning up InteractiveCanvas');
+      logDev('Cleaning up InteractiveCanvas');
       window.removeEventListener('resize', resizeCanvas);
       canvas.removeEventListener('mousemove', mouseHandlers.handleMouseMove);
       canvas.removeEventListener('mousedown', mouseHandlers.handleMouseDown);
