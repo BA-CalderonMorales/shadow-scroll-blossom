@@ -21,6 +21,7 @@ export const backgroundOptions = [
   { value: 'ocean', label: 'Ocean', description: 'Deep blue gradients' },
   { value: 'desert', label: 'Desert Mirage', description: 'Warm sandy gradients' },
   { value: 'forest', label: 'Forest', description: 'Lush green gradients' },
+  { value: 'sunset', label: 'Sunset', description: 'Warm orange to purple gradient' },
   { value: 'fluid', label: 'Interactive Fluid', description: 'Flowing neutral ripples' }
 ];
 
