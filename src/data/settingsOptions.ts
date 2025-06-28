@@ -20,6 +20,7 @@ export const backgroundOptions = [
   { value: 'synthwave', label: 'Synthwave', description: 'Retro 80s neon vibes' },
   { value: 'ocean', label: 'Ocean', description: 'Deep blue gradients' },
   { value: 'desert', label: 'Desert Mirage', description: 'Warm sandy gradients' },
+  { value: 'forest', label: 'Forest', description: 'Lush green gradients' },
   { value: 'fluid', label: 'Interactive Fluid', description: 'Flowing neutral ripples' }
 ];
 

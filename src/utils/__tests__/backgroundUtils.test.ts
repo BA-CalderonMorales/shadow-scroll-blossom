@@ -50,4 +50,14 @@ describe('getBackgroundStyle', () => {
     const result = getBackgroundStyle('desert', false);
     expect(result).toContain('#fef6e4');
   });
+
+  test('returns forest dark style', () => {
+    const result = getBackgroundStyle('forest', true);
+    expect(result).toContain('#0b3311');
+  });
+
+  test('returns forest light style', () => {
+    const result = getBackgroundStyle('forest', false);
+    expect(result).toContain('#e6ffe6');
+  });
 });
