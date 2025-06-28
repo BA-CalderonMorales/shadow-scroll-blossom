@@ -18,6 +18,7 @@ export const backgroundOptions = [
   { value: 'matrix', label: 'Digital Matrix', description: 'Flowing code patterns' },
   { value: 'aurora', label: 'Aurora Borealis', description: 'Dancing northern lights' },
   { value: 'synthwave', label: 'Synthwave', description: 'Retro 80s neon vibes' },
+  { value: 'ocean', label: 'Ocean', description: 'Deep blue gradients' },
   { value: 'fluid', label: 'Interactive Fluid', description: 'Flowing neutral ripples' }
 ];
 
