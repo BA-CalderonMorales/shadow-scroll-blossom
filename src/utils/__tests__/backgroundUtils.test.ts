@@ -70,4 +70,14 @@ describe('getBackgroundStyle', () => {
     const result = getBackgroundStyle('sunset', false);
     expect(result).toContain('#ffdfc0');
   });
+
+  test('returns midnight dark style', () => {
+    const result = getBackgroundStyle('midnight', true);
+    expect(result).toContain('#0b1236');
+  });
+
+  test('returns midnight light style', () => {
+    const result = getBackgroundStyle('midnight', false);
+    expect(result).toContain('#dde7ff');
+  });
 });

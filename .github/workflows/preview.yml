@@ -27,6 +27,8 @@ jobs:
           node-version: 20
           cache: 'npm'
       - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
       - run: VITE_DEPLOY_TARGET=github npm run build
         env:
           VITE_DEPLOY_TARGET: github
