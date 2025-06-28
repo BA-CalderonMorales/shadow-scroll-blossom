@@ -43,6 +43,7 @@ src/
 - Mouse and touch interaction on the canvas
 - Multiple particle styles and background themes
 - Includes a new **Ocean** theme with deep blue gradients
+- Introduces a **Desert** theme with warm sand tones
 - Dark mode toggle with persistence
 - Settings stored in localStorage
 
