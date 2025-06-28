@@ -45,6 +45,7 @@ src/
 - Includes a new **Ocean** theme with deep blue gradients
 - Introduces a **Desert** theme with warm sand tones
 - Adds a **Forest** theme with lush green hues
+- Adds a **Sunset** theme with orange-to-purple hues
 - Dark mode toggle with persistence
 - Settings stored in localStorage
 
