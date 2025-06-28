@@ -28,4 +28,16 @@ describe('getBackgroundStyle', () => {
     expect(result).toContain('var(--x');
     expect(result).toContain('var(--y');
   });
+
+  test('returns ocean dark style', () => {
+    const result = getBackgroundStyle('ocean', true);
+    expect(result).toContain('linear-gradient');
+    expect(result).toContain('#001022');
+  });
+
+  test('returns ocean light style', () => {
+    const result = getBackgroundStyle('ocean', false);
+    expect(result).toContain('linear-gradient');
+    expect(result).toContain('#e0f7ff');
+  });
 });

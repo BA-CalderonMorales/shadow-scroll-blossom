@@ -79,6 +79,17 @@ export const getBackgroundStyle = (backgroundType: string, isDarkMode: boolean):
           linear-gradient(180deg, #fdf4ff 0%, #f3e8ff 100%)
         `;
 
+    case 'ocean':
+      return isDarkMode
+        ? `
+          radial-gradient(circle at 50% 50%, rgba(0, 90, 150, 0.4) 0%, transparent 70%),
+          linear-gradient(180deg, #001022 0%, #004466 100%)
+        `
+        : `
+          radial-gradient(circle at 50% 50%, rgba(0, 120, 200, 0.3) 0%, transparent 70%),
+          linear-gradient(180deg, #e0f7ff 0%, #a0d8f0 100%)
+        `;
+
     case 'fluid':
       return isDarkMode
         ? `
@@ -106,6 +117,8 @@ export const getBackgroundSize = (backgroundType: string): string => {
       return '100% 100%, 100% 100%, 100% 100%, 25px 25px, 25px 25px, 100% 100%';
     case 'synthwave':
       return '100% 100%, 100% 100%, 100% 100%, 20px 20px, 20px 20px, 100% 100%';
+    case 'ocean':
+      return '100% 100%, 100% 100%';
     default:
       return '100% 100%';
   }
