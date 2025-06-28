@@ -22,6 +22,7 @@ export const backgroundOptions = [
   { value: 'desert', label: 'Desert Mirage', description: 'Warm sandy gradients' },
   { value: 'forest', label: 'Forest', description: 'Lush green gradients' },
   { value: 'sunset', label: 'Sunset', description: 'Warm orange to purple gradient' },
+  { value: 'midnight', label: 'Midnight', description: 'Deep indigo tones' },
   { value: 'fluid', label: 'Interactive Fluid', description: 'Flowing neutral ripples' }
 ];
 
