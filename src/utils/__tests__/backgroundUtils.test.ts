@@ -40,4 +40,14 @@ describe('getBackgroundStyle', () => {
     expect(result).toContain('linear-gradient');
     expect(result).toContain('#e0f7ff');
   });
+
+  test('returns desert dark style', () => {
+    const result = getBackgroundStyle('desert', true);
+    expect(result).toContain('#402910');
+  });
+
+  test('returns desert light style', () => {
+    const result = getBackgroundStyle('desert', false);
+    expect(result).toContain('#fef6e4');
+  });
 });
