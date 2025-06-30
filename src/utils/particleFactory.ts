@@ -1,6 +1,12 @@
 
 import { Particle } from '@/types/particle';
-import { blendHexColors, getComplementaryHex, hslToHex } from './colorUtils';
+import {
+  blendHexColors,
+  getComplementaryHex,
+  hslToHex,
+  lightenHex,
+  darkenHex,
+} from './colorUtils';
 
 export const createParticle = (x: number, y: number, trackingType: string, backgroundType: string = 'none'): Particle => {
   const trackingColor = getTrackingAwareColor(trackingType);
@@ -132,6 +138,22 @@ const applyBackgroundBehavior = (particle: Particle, backgroundType: string, tra
         life: 2.5,
         size: particle.size * 1.1, // Reduced from 1.2
         energy: particle.energy * 1.5, // Reduced from 2.0
+      };
+
+    case 'sunset':
+      return {
+        ...particle,
+        color: lightenHex(particle.color, 20),
+        vx: particle.vx * 0.7,
+        vy: particle.vy * 0.7,
+      };
+
+    case 'midnight':
+      return {
+        ...particle,
+        color: darkenHex(particle.color, 15),
+        vx: particle.vx * 0.5,
+        vy: particle.vy * 0.5,
       };
     
     
