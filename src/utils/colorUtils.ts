@@ -74,3 +74,15 @@ export const getComplementaryHex = (hex: string): string => {
   const { h, s, l } = hexToHsl(hex);
   return hslToHex((h + 180) % 360, s, l);
 };
+
+export const adjustHexLightness = (hex: string, amount: number): string => {
+  const { h, s, l } = hexToHsl(hex);
+  const newL = Math.max(0, Math.min(100, l + amount));
+  return hslToHex(h, s, newL);
+};
+
+export const lightenHex = (hex: string, amount: number): string =>
+  adjustHexLightness(hex, Math.abs(amount));
+
+export const darkenHex = (hex: string, amount: number): string =>
+  adjustHexLightness(hex, -Math.abs(amount));
