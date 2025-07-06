@@ -7,6 +7,7 @@ These rules keep development consistent across the project. The document is inte
 - Follow Test-Driven Development. Write tests before production code and keep changes small.
 - Use strict TypeScript and prefer immutable patterns.
 - When looking for solutions, consult **context7** and the guidance in **MEMORY.md**. Do not copy text from MEMORY.md into this file.
+- Familiarize yourself with the Software Engineering Laws in MEMORY.md (Murphy’s Law, Brook’s Law, Hofstadter’s Law, Conway’s Law, Postel’s Law, Pareto Principle, The Peter Principle, Kerckhoffs’s Principle, Linus’s Law, Moore’s Law, Wirth’s Law, Ninety-ninety Rule, Knuth’s Optimization Principle, and Norvig’s Law) to guide planning and code reviews.
 
 ## Local Workflow
 
