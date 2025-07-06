@@ -2,6 +2,8 @@
 
 This project is my personal playground for generative art. It renders colorful particle trails that react to your mouse or touch input and lets you switch between multiple background themes. The repository also serves as a template for anyone wanting to build a similar interactive canvas site.
 
+Development scripts use [Bun](https://bun.sh/) instead of npm.
+
 <details>
 <summary><strong>Using This Repository as a Template</strong></summary>
 
@@ -15,9 +17,9 @@ This project is my personal playground for generative art. It renders colorful p
 <details>
 <summary><strong>Getting Started</strong></summary>
 
-1. Run `npm install`.
-2. Launch the dev server with `npm run dev` and open `http://localhost:8080`.
-3. Build for production with `npm run build`.
+1. Install dependencies with `bun install`.
+2. Start the dev server with `bun run dev` and open `http://localhost:8080`.
+3. Build for production with `bun run build`.
 
 </details>
 
@@ -55,7 +57,7 @@ src/
 <details>
 <summary><strong>Editing the Code</strong></summary>
 
-Edit directly on [Lovable](https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-b38a5b8fc776) or work locally using your favorite editor. Make sure Node.js is installed via [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Edit directly on [Lovable](https://lovable.dev/projects/37feecad-ffa4-4ddb-a957-b38a5b8fc776) or work locally using your favorite editor. Make sure [Bun](https://bun.sh/) is installed.
 
 </details>
 
